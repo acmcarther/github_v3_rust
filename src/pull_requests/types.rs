@@ -19,6 +19,10 @@ pub use self::types::{
   PullRequestCommentSortable,
   PullRequestCommentQuery,
   CommentId,
+  CreateComment,
+  ReplyComment,
+  EditComment,
+  DeleteCommentStatus,
 };
 
 mod types {
@@ -319,4 +323,28 @@ mod types {
     }
   }
 
+  #[derive(RustcDecodable, RustcEncodable, Debug)]
+  pub struct CreateComment {
+    body: Message,
+    commit_id: Sha,
+    path: String, // TODO: type for this
+    position: u32, // TODO: type for this
+  }
+
+  #[derive(RustcDecodable, RustcEncodable, Debug)]
+  pub struct ReplyComment {
+    body: Message,
+    in_reply_to: CommentId
+  }
+
+  #[derive(RustcDecodable, RustcEncodable, Debug)]
+  pub struct EditComment {
+    body: Message
+  }
+
+  #[allow(dead_code)]
+  pub enum DeleteCommentStatus {
+    Deleted,
+    NotDeleted
+  }
 }
