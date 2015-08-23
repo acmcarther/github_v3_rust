@@ -94,31 +94,31 @@ mod pull_requests {
     }
 
     fn create_raw(self, repo: Repository, title: PullRequestTitle, head: HeadQuery, base: BranchName, message: Message) -> Result<PullRequest, RequestErr> {
-      Err("fuck".to_owned())
+      Err("not implemented".to_owned())
     }
 
     fn create_from_issue(self, repo: Repository, head: HeadQuery, base: BranchName, issue: IssueId) -> Result<PullRequest, RequestErr> {
-      Err("fuck".to_owned())
+      Err("not implemented".to_owned())
     }
 
     fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<UpdatedPullRequest, RequestErr> {
-      Err("fuck".to_owned())
+      Err("not implemented".to_owned())
     }
 
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<Commit>, RequestErr> {
-      Err("fuck".to_owned())
+      Err("not implemented".to_owned())
     }
 
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, RequestErr> {
-      Err("fuck".to_owned())
+      Err("not implemented".to_owned())
     }
 
     fn get_merged(self, pull_request: PullRequestReference) -> Result<MergedStatus, RequestErr> {
-      Err("fuck".to_owned())
+      Err("not implemented".to_owned())
     }
 
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, RequestErr> {
-      Err("fuck".to_owned())
+      Err("not implemented".to_owned())
     }
   }
 
