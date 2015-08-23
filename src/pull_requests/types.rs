@@ -18,6 +18,7 @@ pub use self::types::{
   PullRequestComment,
   PullRequestCommentSortable,
   PullRequestCommentQuery,
+  CommentId,
 };
 
 mod types {
@@ -46,6 +47,7 @@ mod types {
 
   pub type PullRequestId = u32;
   pub type PullRequestTitle = String;
+  pub type CommentId = u32;
 
   #[derive(Debug)]
   pub enum PullRequestState {
@@ -214,16 +216,19 @@ mod types {
     pub issue: IssueId
   }
 
+  #[allow(dead_code)]
   pub struct MergeRequest {
     commit_message: Option<Message>,
     sha: Option<Sha>
   }
 
+  #[allow(dead_code)]
   pub enum MergeFailure {
     NotPossible,
     ShaDidNotMatch,
   }
 
+  #[allow(dead_code)]
   pub enum MergedResult {
     Success { sha: Sha, message: Message },
     Failure { failure_type: MergeFailure, message: Message, documentation_url: Url }
@@ -248,6 +253,7 @@ mod types {
     pub pull_request_id: PullRequestId
   }
 
+  #[allow(dead_code)]
   pub enum MergedStatus {
     Merged,
     NotMerged

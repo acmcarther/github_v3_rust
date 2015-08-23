@@ -13,7 +13,6 @@ mod pull_requests {
   use std::any::Any;
   use std::io::Read;
   use std::io::ErrorKind;
-  use std::error::Error as StdError;
 
   use rustc_serialize::{
     json
@@ -42,7 +41,7 @@ mod pull_requests {
 
   use pull_requests::url_builders;
 
-  use commits::types::{Commit, GithubCommit};
+  use commits::types::GithubCommit;
 
   fn deserialize<S: Decodable>(response: Response) -> Result<S, DecoderError> {
     let mut response = response;
@@ -72,7 +71,9 @@ mod pull_requests {
     fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, GitErr>;
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<GithubCommit>, GitErr>;
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, GitErr>;
+    #[allow(dead_code, unused_variables)]
     fn get_merged(self, pull_request: PullRequestReference) -> Result<MergedStatus, GitErr>;
+    #[allow(dead_code, unused_variables)]
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, GitErr>;
     fn list_comments(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr>;
     fn list_all_pull_request_comments(self, repo: Repository, query: PullRequestCommentQuery) -> Result<Vec<PullRequestComment>, GitErr>;
@@ -157,11 +158,13 @@ mod pull_requests {
         .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
     }
 
+    #[allow(dead_code, unused_variables)]
     fn get_merged(self, pull_request: PullRequestReference) -> Result<MergedStatus, GitErr> {
       // TODO:
       Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
     }
 
+    #[allow(dead_code, unused_variables)]
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, GitErr> {
       // TODO:
       Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
@@ -188,6 +191,7 @@ mod pull_requests {
   }
 
   #[cfg(test)]
+  #[allow(dead_code)]
   mod tests {
     use super::PullRequester;
     use types::{SortDirection, Repository};
