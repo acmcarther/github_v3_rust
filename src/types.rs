@@ -8,7 +8,7 @@ pub use self::types::{
   Sha,
   Url,
   Filename,
-  RequestErr,
+  GitErr,
   Body,
   GitTm,
   SortDirection,
@@ -36,7 +36,7 @@ mod types {
   pub type Sha = String;
   pub type Url = String;
   pub type Filename = String;
-  pub type RequestErr = Error;
+  pub type GitErr = Error;
 
   #[derive(Debug)]
   pub struct GitTm(Tm);
