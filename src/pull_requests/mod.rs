@@ -1,4 +1,5 @@
 pub mod types;
+pub mod url_builders;
 
 mod pull_requests {
   use hyper::header::Scheme;
@@ -36,6 +37,8 @@ mod pull_requests {
     MergedStatus
   };
 
+  use pull_requests::url_builders;
+
   use commits::types::Commit;
 
   fn deserialize<S: Decodable>(response: Response) -> Result<S, DecoderError> {
@@ -60,7 +63,7 @@ mod pull_requests {
 
   impl<S: Scheme + Any> PullRequester for GithubClient<S> where S::Err: 'static {
     fn list(self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, RequestErr> {
-      let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls";
+      let url = url_builders::pull_requests(&repo);
       let query_body = query.map(|query| json::encode(&query));
       match query_body {
         Some(query_res) => {
@@ -81,15 +84,14 @@ mod pull_requests {
     }
 
     fn get_pr(self, repo: Repository, pr_id: PullRequestId) -> Result<PullRequest, RequestErr> {
-      let pr_string = pr_id.to_string();
-      let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls/" + &pr_string;
+      let url = url_builders::pull_request_at(&repo, &pr_id);
       self.get(url, None)
         .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
         .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
     }
 
     fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, RequestErr> {
-      let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls";
+      let url = url_builders::pull_requests(&repo);
       let details_body = json::encode(&details);
       details_body
         .map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned()))
@@ -101,7 +103,7 @@ mod pull_requests {
     }
 
     fn create_from_issue(self, repo: Repository, details: CreatePullRequestFromIssue) -> Result<PullRequest, RequestErr> {
-      let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls";
+      let url = url_builders::pull_requests(&repo);
       let details_body = json::encode(&details);
       details_body
         .map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned()))
@@ -113,7 +115,7 @@ mod pull_requests {
     }
 
     fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, RequestErr> {
-      let url = "https://api.github.com/repos/".to_owned() + &pull_request.repo.owner + "/" + &pull_request.repo.repo_name + "/pulls/" + &pull_request.pull_request_id.to_string();
+      let url = url_builders::pull_request_at(&pull_request.repo, &pull_request.pull_request_id);
       let update_body = json::encode(&update);
       update_body
         .map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned()))
@@ -125,14 +127,14 @@ mod pull_requests {
     }
 
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<Commit>, RequestErr> {
-      let url = "https://api.github.com/repos/".to_owned() + &pull_request.repo.owner + "/" + &pull_request.repo.repo_name + "/pulls/" + &pull_request.pull_request_id.to_string() + "/commits";
+      let url = url_builders::pull_request_commits(&pull_request.repo, &pull_request.pull_request_id);
       self.get(url, None)
         .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
         .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
     }
 
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, RequestErr> {
-      let url = "https://api.github.com/repos/".to_owned() + &pull_request.repo.owner + "/" + &pull_request.repo.repo_name + "/pulls/" + &pull_request.pull_request_id.to_string() + "/files";
+      let url = url_builders::pull_request_files(&pull_request.repo, &pull_request.pull_request_id);
       self.get(url, None)
         .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
         .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
