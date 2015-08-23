@@ -2,7 +2,8 @@ pub use self::github_client::GithubClient;
 
 mod github_client {
   use hyper::Client;
-  use hyper::header::{Authorization, Connection, Scheme, UserAgent};
+  use hyper::header::{Accept, Authorization, Connection, qitem, Scheme, UserAgent};
+  use hyper::mime::{Mime, TopLevel, SubLevel};
   use hyper::method::Method;
   use hyper::client::response::Response;
   use hyper::error::Error;
@@ -44,6 +45,7 @@ mod github_client {
     fn build_common_request<'a, U: IntoUrl>(&self, request: RequestBuilder<'a, U>, body: &'a str) -> Result<Response, Error> {
       let common_request =
         request
+          .header(Accept(vec![qitem(Mime(TopLevel::Application, SubLevel::Ext("vnd.github.v3+json".to_owned()), vec![]))]))
           .header(UserAgent("CatalystBot".to_owned()))
           .header(Connection::close());
 
