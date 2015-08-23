@@ -166,9 +166,9 @@ mod types {
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct PullRequestUpdate {
-    title: Option<PullRequestTitle>,
-    body: Option<Message>,
-    state: Option<PullRequestState>
+    pub title: Option<PullRequestTitle>,
+    pub body: Option<Message>,
+    pub state: Option<PullRequestState>
   }
 
   #[derive(RustcDecodable, Debug)]
@@ -198,17 +198,17 @@ mod types {
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct CreatePullRequest {
-    title: PullRequestTitle,
-    head: HeadQuery,
-    base: BranchName,
-    body: Option<Message>
+    pub title: PullRequestTitle,
+    pub head: HeadQuery,
+    pub base: BranchName,
+    pub body: Option<Message>
   }
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct CreatePullRequestFromIssue {
-    head: HeadQuery,
-    base: BranchName,
-    issue: IssueId
+    pub head: HeadQuery,
+    pub base: BranchName,
+    pub issue: IssueId
   }
 
   pub struct MergeRequest {

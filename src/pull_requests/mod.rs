@@ -40,7 +40,7 @@ mod pull_requests {
 
   use pull_requests::url_builders;
 
-  use commits::types::Commit;
+  use commits::types::{Commit, GithubCommit};
 
   fn deserialize<S: Decodable>(response: Response) -> Result<S, DecoderError> {
     let mut response = response;
@@ -51,15 +51,15 @@ mod pull_requests {
   }
 
   fn decode_err_to_git_err(err: DecoderError) -> GitErr {
-    GitErr::new(ErrorKind::Other, "Decode failed: ".to_owned() + err.description())
+    GitErr::new(ErrorKind::Other, "Decode failed: ".to_owned() + &err.to_string())
   }
 
   fn encode_err_to_git_err(err: EncoderError) -> GitErr {
-    GitErr::new(ErrorKind::Other, "Encode failed: ".to_owned() + err.description())
+    GitErr::new(ErrorKind::Other, "Encode failed: ".to_owned() + &err.to_string())
   }
 
   fn net_err_to_git_err(err: HyperError) -> GitErr {
-    GitErr::new(ErrorKind::Other, "Request failed: ".to_owned() + err.description())
+    GitErr::new(ErrorKind::Other, "Request failed: ".to_owned() + &err.to_string())
   }
 
   pub trait PullRequester {
@@ -68,7 +68,7 @@ mod pull_requests {
     fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, GitErr>;
     fn create_from_issue(self, repo: Repository, details: CreatePullRequestFromIssue) -> Result<PullRequest, GitErr>;
     fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, GitErr>;
-    fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<Commit>, GitErr>;
+    fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<GithubCommit>, GitErr>;
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, GitErr>;
     fn get_merged(self, pull_request: PullRequestReference) -> Result<MergedStatus, GitErr>;
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, GitErr>;
@@ -139,7 +139,7 @@ mod pull_requests {
         })
     }
 
-    fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<Commit>, GitErr> {
+    fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<GithubCommit>, GitErr> {
       let url = url_builders::pull_request_commits(&pull_request.repo, &pull_request.pull_request_id);
       self.get(url, None)
         .map_err(net_err_to_git_err)
@@ -171,6 +171,12 @@ mod pull_requests {
     use github_client::GithubClient;
     use hyper::header::Authorization;
     use std::env;
+    use pull_requests::types::{
+      CreatePullRequest,
+      PullRequestState,
+      PullRequestUpdate,
+      PullRequestReference
+    };
 
     //#[test]
     fn list_works() {
@@ -185,6 +191,38 @@ mod pull_requests {
       let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
       let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
       let pull_requests = client.get_pr(Repository { owner: "acmcarther".to_owned(), repo_name: "rust-roguelike".to_owned() }, 1);
+      println!("{:?}", pull_requests)
+    }
+
+    //#[test]
+    fn create_pr_works() {
+      let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
+      let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
+      let pull_requests = client.create_raw(Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }, CreatePullRequest {title: "Github api test".to_owned(), head: "t1".to_owned(), base: "master".to_owned(), body: Some("This is my test message".to_owned())});
+      println!("{:?}", pull_requests)
+    }
+
+    //#[test]
+    fn update_pr_works() {
+      let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
+      let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
+      let pull_requests = client.update_pull_request(PullRequestReference{ pull_request_id: 1, repo:Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }}, PullRequestUpdate {title: Some("test update title open".to_owned()), body: Some("Some new body open".to_owned()), state: Some(PullRequestState::Open)});
+      println!("{:?}", pull_requests)
+    }
+
+    //#[test]
+    fn list_commits_works() {
+      let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
+      let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
+      let pull_requests = client.list_commits(PullRequestReference{ pull_request_id: 1, repo:Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }});
+      println!("{:?}", pull_requests)
+    }
+
+    //#[test]
+    fn list_files_works() {
+      let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
+      let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
+      let pull_requests = client.list_files(PullRequestReference{ pull_request_id: 1, repo:Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }});
       println!("{:?}", pull_requests)
     }
   }

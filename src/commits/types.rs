@@ -1,11 +1,16 @@
 pub use self::types::{
-  Commit
+  Commit,
+  GithubCommit,
 };
 
 mod types {
   use types::{
     BranchName,
     Sha,
+    Url,
+    GitTm,
+    Message,
+
   };
 
   use users::types::User;
@@ -18,5 +23,40 @@ mod types {
     sha: Sha,
     user: User,
     repo: Repo,
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct GithubCommit {
+    url: Url,
+    sha: Sha,
+    html_url: Url,
+    comments_url: Url,
+    commit: GithubCommitSummary,
+    author: User,
+    committer: User,
+    parents: Vec<CommitTreeNode>
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct GithubCommitSummary {
+    url: Url,
+    author: CommitAuthor,
+    committer: CommitAuthor,
+    message: Message,
+    tree: CommitTreeNode,
+    comment_count: u32,
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct CommitAuthor {
+    name: String,
+    email: String,
+    date: GitTm
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct CommitTreeNode {
+    url: Url,
+    sha: Sha,
   }
 }
