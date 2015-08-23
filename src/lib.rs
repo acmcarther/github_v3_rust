@@ -1,12 +1,10 @@
-#![feature(plugin)]
-#![plugin(stainless)]
-
 extern crate hyper;
 extern crate time;
 extern crate rustc_serialize;
 
-// TODO: Make this only a dev dependency
-extern crate stainless;
+#[cfg(test)]
+#[macro_use(expect)]
+extern crate expectest;
 
 mod commits;
 mod github_client;
