@@ -14,7 +14,10 @@ pub use self::types::{
   MergedResult,
   PullRequestFile,
   PullRequestReference,
-  MergedStatus
+  MergedStatus,
+  PullRequestComment,
+  PullRequestCommentSortable,
+  PullRequestCommentQuery,
 };
 
 mod types {
@@ -59,7 +62,7 @@ mod types {
             "open" => Ok(PullRequestState::Open),
             "closed" => Ok(PullRequestState::Closed),
             _ => {
-              let err_str = "no matching pull request state for {}".to_owned() + &state_str;
+              let err_str = "no matching pull request state for ".to_owned() + &state_str;
               Err(d.error(&err_str))
             }
           }
@@ -95,7 +98,7 @@ mod types {
             "closed" => Ok(PullRequestStateQuery::Closed),
             "all" => Ok(PullRequestStateQuery::All),
             _ => {
-              let err_str = "no matching pull request state query for {}".to_owned() + &state_str;
+              let err_str = "no matching pull request state query for ".to_owned() + &state_str;
               Err(d.error(&err_str))
             }
           }
@@ -134,7 +137,7 @@ mod types {
             "popularity" => Ok(PullRequestSortables::CommentCount),
             "long-running" => Ok(PullRequestSortables::LongRunning),
             _ => {
-              let err_str = "no matching sort direction for {}".to_owned() + &state_str;
+              let err_str = "no matching sort direction for ".to_owned() + &state_str;
               Err(d.error(&err_str))
             }
           }
@@ -248,6 +251,66 @@ mod types {
   pub enum MergedStatus {
     Merged,
     NotMerged
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct PullRequestComment {
+    url: Url,
+    id: u32,
+    diff_hunk: String,
+    path: String,
+    position: i32, // TODO: unsigned or signed?
+    original_position: i32,
+    commit_id: Sha,
+    original_commit_id: Sha,
+    user: User,
+    body: Message,
+    created_at: GitTm,
+    updated_at: GitTm,
+    html_url: Url,
+    pull_request_url: Url
+    // TODO: _links
+  }
+
+  #[derive(RustcDecodable, RustcEncodable, Debug)]
+  pub struct PullRequestCommentQuery {
+    pub sort: Option<PullRequestCommentSortable>,
+    pub direction: Option<SortDirection>,
+    pub since: Option<GitTm>
+  }
+
+  #[derive(Debug)]
+  pub enum PullRequestCommentSortable {
+    Created,
+    Updated
+  }
+
+  impl Decodable for PullRequestCommentSortable {
+    fn decode<D: Decoder>(d: &mut D) -> Result<PullRequestCommentSortable, D::Error> {
+      d
+        .read_str()
+        .and_then(|state_str| {
+          match state_str.as_ref() {
+            "created" => Ok(PullRequestCommentSortable::Created),
+            "updated" => Ok(PullRequestCommentSortable::Updated),
+            _ => {
+              let err_str = "no matching pull request comment sortable for ".to_owned() + &state_str;
+              Err(d.error(&err_str))
+            }
+          }
+        })
+    }
+  }
+
+  impl Encodable for PullRequestCommentSortable {
+    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+      let state_str =
+        match *self {
+          PullRequestCommentSortable::Created => "created",
+          PullRequestCommentSortable::Updated => "updated"
+        };
+      s.emit_str(state_str)
+    }
   }
 
 }

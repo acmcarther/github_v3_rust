@@ -17,7 +17,10 @@ pub use self::types::{
 
 mod types {
   use time::Tm;
-  use time::strptime;
+  use time::{
+    strptime,
+    strftime
+  };
   use std::io::Error;
   use rustc_serialize::{
     Decodable,
@@ -53,6 +56,15 @@ mod types {
               d.error("could not parse time")
             })
         })
+    }
+  }
+
+  impl Encodable for GitTm {
+    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+      // TODO: No unwrap?
+      let &GitTm(tm) = self;
+      let time_str = strftime("%Y-%m-%dT%H:%M:%S%z", &tm).unwrap();
+      s.emit_str(&time_str)
     }
   }
 

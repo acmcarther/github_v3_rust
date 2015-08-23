@@ -35,7 +35,9 @@ mod pull_requests {
     MergedResult,
     PullRequestFile,
     PullRequestReference,
-    MergedStatus
+    MergedStatus,
+    PullRequestComment,
+    PullRequestCommentQuery,
   };
 
   use pull_requests::url_builders;
@@ -72,6 +74,8 @@ mod pull_requests {
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, GitErr>;
     fn get_merged(self, pull_request: PullRequestReference) -> Result<MergedStatus, GitErr>;
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, GitErr>;
+    fn list_comments(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr>;
+    fn list_all_pull_request_comments(self, repo: Repository, query: PullRequestCommentQuery) -> Result<Vec<PullRequestComment>, GitErr>;
   }
 
   impl<S: Scheme + Any> PullRequester for GithubClient<S> where S::Err: 'static {
@@ -162,12 +166,31 @@ mod pull_requests {
       // TODO:
       Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
     }
+
+    fn list_comments(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr> {
+      let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
+      self.get(url, None)
+        .map_err(net_err_to_git_err)
+        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+    }
+
+    fn list_all_pull_request_comments(self, repo: Repository, query: PullRequestCommentQuery) -> Result<Vec<PullRequestComment>, GitErr> {
+      let url = url_builders::all_pull_request_comments(&repo);
+      let query_body = json::encode(&query);
+      query_body
+        .map_err(encode_err_to_git_err)
+        .and_then(|query| {
+          self.get(url, Some(query))
+            .map_err(net_err_to_git_err)
+            .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        })
+    }
   }
 
   #[cfg(test)]
   mod tests {
     use super::PullRequester;
-    use types::Repository;
+    use types::{SortDirection, Repository};
     use github_client::GithubClient;
     use hyper::header::Authorization;
     use std::env;
@@ -175,7 +198,9 @@ mod pull_requests {
       CreatePullRequest,
       PullRequestState,
       PullRequestUpdate,
-      PullRequestReference
+      PullRequestReference,
+      PullRequestCommentQuery,
+      PullRequestCommentSortable
     };
 
     //#[test]
@@ -223,6 +248,22 @@ mod pull_requests {
       let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
       let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
       let pull_requests = client.list_files(PullRequestReference{ pull_request_id: 1, repo:Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }});
+      println!("{:?}", pull_requests)
+    }
+
+    //#[test]
+    fn list_comments_works() {
+      let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
+      let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
+      let pull_requests = client.list_comments(PullRequestReference{ pull_request_id: 1, repo:Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }});
+      println!("{:?}", pull_requests)
+    }
+
+    //#[test]
+    fn list_all_pull_request_comments_works() {
+      let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
+      let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
+      let pull_requests = client.list_all_pull_request_comments(Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }, PullRequestCommentQuery {sort: Some(PullRequestCommentSortable::Created), direction: Some(SortDirection::Descending), since: None});
       println!("{:?}", pull_requests)
     }
   }
