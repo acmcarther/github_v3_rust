@@ -6,6 +6,7 @@ mod github_client {
   use hyper::method::Method;
   use hyper::client::response::Response;
   use hyper::error::Error;
+  use hyper::client::{RequestBuilder, IntoUrl};
 
   use types::{Url, Body};
   use std::any::Any;
@@ -19,55 +20,38 @@ mod github_client {
     pub fn new(token: Option<Authorization<S>>) -> GithubClient<S> {
       GithubClient { client: Client::new(), token: token }
     }
-    pub fn get(self, url: Url) -> Result<Response, Error> {
-      let token = self.token.clone();
-      let request = self.client.get(&url)
-        .header(UserAgent("CatalystBot".to_owned()))
-        .header(Connection::close());
 
+    fn buildCommonRequest<'a, U: IntoUrl>(&self, request: RequestBuilder<'a, U>) -> RequestBuilder<'a, U> {
+      let common_request =
+        request
+          .header(UserAgent("CatalystBot".to_owned()))
+          .header(Connection::close());
+
+      let token = self.token.clone();
       match token {
-        Some(authorization) => request.header(authorization).send(),
-        None => request.send()
+        Some(authorization) => common_request.header(authorization),
+        None => common_request
       }
+    }
+
+    pub fn get(self, url: Url) -> Result<Response, Error> {
+      let initial_request = self.client.get(&url);
+      self.buildCommonRequest(initial_request).send()
     }
 
     pub fn post(self, url: Url, body: Body) -> Result<Response, Error> {
-      let token = self.token.clone();
-      let request = self.client.post(&url)
-        .header(UserAgent("CatalystBot".to_owned()))
-        .header(Connection::close())
-        .body(&body);
-
-      match token {
-        Some(authorization) => request.header(authorization).send(),
-        None => request.send()
-      }
+      let initial_request = self.client.post(&url);
+      self.buildCommonRequest(initial_request).body(&body).send()
     }
 
     pub fn put(self, url: Url, body: Body) -> Result<Response, Error> {
-      let token = self.token.clone();
-      let request = self.client.put(&url)
-        .header(UserAgent("CatalystBot".to_owned()))
-        .header(Connection::close())
-        .body(&body);
-
-      match token {
-        Some(authorization) => request.header(authorization).send(),
-        None => request.send()
-      }
+      let initial_request = self.client.put(&url);
+      self.buildCommonRequest(initial_request).body(&body).send()
     }
 
     pub fn patch(self, url: Url, body: Body) -> Result<Response, Error> {
-      let token = self.token.clone();
-      let request = self.client.request(Method::Patch, &url)
-        .header(UserAgent("CatalystBot".to_owned()))
-        .header(Connection::close())
-        .body(&body);
-
-      match token {
-        Some(authorization) => request.header(authorization).send(),
-        None => request.send()
-      }
+      let initial_request = self.client.request(Method::Patch, &url);
+      self.buildCommonRequest(initial_request).body(&body).send()
     }
   }
 }
