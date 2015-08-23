@@ -7,10 +7,11 @@ pub use self::types::{
   PullRequestQuery,
   PullRequestUpdate,
   PullRequest,
+  CreatePullRequest,
+  CreatePullRequestFromIssue,
   MergeRequest,
   MergeFailure,
   MergedResult,
-  UpdatedPullRequest,
   PullRequestFile,
   PullRequestReference,
   MergedStatus
@@ -34,6 +35,7 @@ mod types {
     Url,
     GitTm,
     SortDirection,
+    IssueId
   };
 
   use users::types::User;
@@ -153,7 +155,7 @@ mod types {
     }
   }
 
-  #[derive(RustcDecodable, Debug)]
+  #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct PullRequestQuery {
     state: Option<PullRequestStateQuery>,
     head: Option<HeadQuery>,
@@ -162,6 +164,7 @@ mod types {
     direction: Option<SortDirection>,
   }
 
+  #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct PullRequestUpdate {
     title: Option<PullRequestTitle>,
     body: Option<Message>,
@@ -193,6 +196,21 @@ mod types {
     // TODO: _links
   }
 
+  #[derive(RustcEncodable, RustcDecodable, Debug)]
+  pub struct CreatePullRequest {
+    title: PullRequestTitle,
+    head: HeadQuery,
+    base: BranchName,
+    body: Option<Message>
+  }
+
+  #[derive(RustcEncodable, RustcDecodable, Debug)]
+  pub struct CreatePullRequestFromIssue {
+    head: HeadQuery,
+    base: BranchName,
+    issue: IssueId
+  }
+
   pub struct MergeRequest {
     commit_message: Option<Message>,
     sha: Option<Sha>
@@ -208,20 +226,23 @@ mod types {
     Failure { failure_type: MergeFailure, message: Message, documentation_url: Url }
   }
 
-  // TODO: Build this out with all of the data
-  pub struct UpdatedPullRequest {
-    id: PullRequestId
-  }
-
-  // TODO: Build this out with all of the data
+  #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct PullRequestFile {
     sha: Sha,
     filename: Filename,
+    status: String,   // TODO: Bound this in an enum
+    additions: u32,
+    deletions: u32,
+    changes: u32,
+    blob_url: Url,
+    raw_url: Url,
+    contents_url: Url,
+    patch: String  // TODO: Define this type
   }
 
   pub struct PullRequestReference {
-    repo: Repository,
-    pull_request_id: PullRequestId
+    pub repo: Repository,
+    pub pull_request_id: PullRequestId
   }
 
   pub enum MergedStatus {
@@ -230,6 +251,3 @@ mod types {
   }
 
 }
-
-
-

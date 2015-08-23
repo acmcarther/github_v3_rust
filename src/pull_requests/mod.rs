@@ -2,65 +2,56 @@ pub mod types;
 
 mod pull_requests {
   use hyper::header::Scheme;
+  use hyper::client::response::Response;
+  use rustc_serialize::Decodable;
+  use rustc_serialize::json::DecoderError;
 
   use github_client::GithubClient;
 
   use std::any::Any;
   use std::io::Read;
+  use std::io::ErrorKind;
+  use std::error::Error as StdError;
 
   use rustc_serialize::{
     json
   };
 
   use types::{
-    UserName,
-    RepoName,
-    HeadQuery,
-    BranchName,
-    IssueId,
-    Message,
-    Sha,
-    Url,
-    Filename,
     RequestErr,
-    GitTm,
-    SortDirection,
     Repository,
   };
 
   use pull_requests::types::{
     PullRequestId,
-    PullRequestTitle,
-    PullRequestState,
-    PullRequestStateQuery,
-    PullRequestSortables,
     PullRequestQuery,
     PullRequestUpdate,
     PullRequest,
+    CreatePullRequest,
+    CreatePullRequestFromIssue,
     MergeRequest,
-    MergeFailure,
     MergedResult,
-    UpdatedPullRequest,
     PullRequestFile,
     PullRequestReference,
     MergedStatus
   };
 
-  use repos::types::{
-    Repo,
-    RepoPermissions
-  };
-
   use commits::types::Commit;
 
-  use users::types::User;
+  fn deserialize<S: Decodable>(response: Response) -> Result<S, DecoderError> {
+    let mut response = response;
+    let mut buf = String::new();
+    let _ = response.read_to_string(&mut buf);
+    println!("recv: {}", buf);
+    json::decode(&buf)
+  }
 
   pub trait PullRequester {
     fn list(self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, RequestErr>;
     fn get_pr(self, repo: Repository, pr_id: PullRequestId) -> Result<PullRequest, RequestErr>;
-    fn create_raw(self, repo: Repository, title: PullRequestTitle, head: HeadQuery, base: BranchName, message: Message) -> Result<PullRequest, RequestErr>;
-    fn create_from_issue(self, repo: Repository, head: HeadQuery, base: BranchName, issue: IssueId) -> Result<PullRequest, RequestErr>;
-    fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<UpdatedPullRequest, RequestErr>;
+    fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, RequestErr>;
+    fn create_from_issue(self, repo: Repository, details: CreatePullRequestFromIssue) -> Result<PullRequest, RequestErr>;
+    fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, RequestErr>;
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<Commit>, RequestErr>;
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, RequestErr>;
     fn get_merged(self, pull_request: PullRequestReference) -> Result<MergedStatus, RequestErr>;
@@ -70,55 +61,91 @@ mod pull_requests {
   impl<S: Scheme + Any> PullRequester for GithubClient<S> where S::Err: 'static {
     fn list(self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, RequestErr> {
       let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls";
-      self.get(url)
-        .map(|mut response| {
-          let mut buf = String::new();
-          let _ = response.read_to_string(&mut buf);
-          println!("recv: {}", buf);
-          json::decode(&buf).unwrap()
-        })
-        .map_err(|_| "Request failed".to_owned())
+      let query_body = query.map(|query| json::encode(&query));
+      match query_body {
+        Some(query_res) => {
+          query_res
+            .map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned()))
+            .and_then(|query| {
+              self.get(url, Some(query))
+                .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+                .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
+            })
+        },
+        None => {
+          self.get(url, None)
+            .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+            .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
+        }
+      }
     }
 
     fn get_pr(self, repo: Repository, pr_id: PullRequestId) -> Result<PullRequest, RequestErr> {
       let pr_string = pr_id.to_string();
       let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls/" + &pr_string;
-      self.get(url)
-        .map(|mut response| {
-          let mut buf = String::new();
-          let _ = response.read_to_string(&mut buf);
-          println!("recv: {}", buf);
-          json::decode(&buf).unwrap()
+      self.get(url, None)
+        .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+        .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
+    }
+
+    fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, RequestErr> {
+      let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls";
+      let details_body = json::encode(&details);
+      details_body
+        .map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned()))
+        .and_then(|details| {
+          self.post(url, Some(details))
+            .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+            .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
         })
-        .map_err(|_| "Request failed".to_owned())
     }
 
-    fn create_raw(self, repo: Repository, title: PullRequestTitle, head: HeadQuery, base: BranchName, message: Message) -> Result<PullRequest, RequestErr> {
-      Err("not implemented".to_owned())
+    fn create_from_issue(self, repo: Repository, details: CreatePullRequestFromIssue) -> Result<PullRequest, RequestErr> {
+      let url = "https://api.github.com/repos/".to_owned() + &repo.owner + "/" + &repo.repo_name + "/pulls";
+      let details_body = json::encode(&details);
+      details_body
+        .map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned()))
+        .and_then(|details| {
+          self.post(url, Some(details))
+            .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+            .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
+        })
     }
 
-    fn create_from_issue(self, repo: Repository, head: HeadQuery, base: BranchName, issue: IssueId) -> Result<PullRequest, RequestErr> {
-      Err("not implemented".to_owned())
-    }
-
-    fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<UpdatedPullRequest, RequestErr> {
-      Err("not implemented".to_owned())
+    fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, RequestErr> {
+      let url = "https://api.github.com/repos/".to_owned() + &pull_request.repo.owner + "/" + &pull_request.repo.repo_name + "/pulls/" + &pull_request.pull_request_id.to_string();
+      let update_body = json::encode(&update);
+      update_body
+        .map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned()))
+        .and_then(|update| {
+          self.patch(url, Some(update))
+            .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+            .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
+        })
     }
 
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<Commit>, RequestErr> {
-      Err("not implemented".to_owned())
+      let url = "https://api.github.com/repos/".to_owned() + &pull_request.repo.owner + "/" + &pull_request.repo.repo_name + "/pulls/" + &pull_request.pull_request_id.to_string() + "/commits";
+      self.get(url, None)
+        .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+        .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
     }
 
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, RequestErr> {
-      Err("not implemented".to_owned())
+      let url = "https://api.github.com/repos/".to_owned() + &pull_request.repo.owner + "/" + &pull_request.repo.repo_name + "/pulls/" + &pull_request.pull_request_id.to_string() + "/files";
+      self.get(url, None)
+        .map_err(|_| RequestErr::new(ErrorKind::Other, "Request failed".to_owned()))
+        .and_then(|res| deserialize(res).map_err(|err| RequestErr::new(ErrorKind::Other, err.description().to_owned())))
     }
 
     fn get_merged(self, pull_request: PullRequestReference) -> Result<MergedStatus, RequestErr> {
-      Err("not implemented".to_owned())
+      // TODO:
+      Err(RequestErr::new(ErrorKind::Other, "not implemented".to_owned()))
     }
 
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, RequestErr> {
-      Err("not implemented".to_owned())
+      // TODO:
+      Err(RequestErr::new(ErrorKind::Other, "not implemented".to_owned()))
     }
   }
 

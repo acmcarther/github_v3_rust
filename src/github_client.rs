@@ -21,37 +21,39 @@ mod github_client {
       GithubClient { client: Client::new(), token: token }
     }
 
-    fn buildCommonRequest<'a, U: IntoUrl>(&self, request: RequestBuilder<'a, U>) -> RequestBuilder<'a, U> {
+    pub fn get(self, url: Url, body: Option<Body>) -> Result<Response, Error> {
+      let initial_request = self.client.get(&url);
+      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
+    }
+
+    pub fn post(self, url: Url, body: Option<Body>) -> Result<Response, Error> {
+      let initial_request = self.client.post(&url);
+      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
+    }
+
+    pub fn put(self, url: Url, body: Option<Body>) -> Result<Response, Error> {
+      let initial_request = self.client.put(&url);
+      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
+    }
+
+    pub fn patch(self, url: Url, body: Option<Body>) -> Result<Response, Error> {
+      let initial_request = self.client.request(Method::Patch, &url);
+      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
+    }
+
+    fn build_common_request<'a, U: IntoUrl>(&self, request: RequestBuilder<'a, U>, body: &'a str) -> Result<Response, Error> {
       let common_request =
         request
           .header(UserAgent("CatalystBot".to_owned()))
           .header(Connection::close());
 
       let token = self.token.clone();
-      match token {
+      let auth_request = match token {
         Some(authorization) => common_request.header(authorization),
         None => common_request
-      }
-    }
+      };
 
-    pub fn get(self, url: Url) -> Result<Response, Error> {
-      let initial_request = self.client.get(&url);
-      self.buildCommonRequest(initial_request).send()
-    }
-
-    pub fn post(self, url: Url, body: Body) -> Result<Response, Error> {
-      let initial_request = self.client.post(&url);
-      self.buildCommonRequest(initial_request).body(&body).send()
-    }
-
-    pub fn put(self, url: Url, body: Body) -> Result<Response, Error> {
-      let initial_request = self.client.put(&url);
-      self.buildCommonRequest(initial_request).body(&body).send()
-    }
-
-    pub fn patch(self, url: Url, body: Body) -> Result<Response, Error> {
-      let initial_request = self.client.request(Method::Patch, &url);
-      self.buildCommonRequest(initial_request).body(&body).send()
+      auth_request.body(body).send()
     }
   }
 }

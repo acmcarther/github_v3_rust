@@ -18,6 +18,7 @@ pub use self::types::{
 mod types {
   use time::Tm;
   use time::strptime;
+  use std::io::Error;
   use rustc_serialize::{
     Decodable,
     Decoder,
@@ -35,7 +36,7 @@ mod types {
   pub type Sha = String;
   pub type Url = String;
   pub type Filename = String;
-  pub type RequestErr = String;
+  pub type RequestErr = Error;
 
   #[derive(Debug)]
   pub struct GitTm(Tm);
