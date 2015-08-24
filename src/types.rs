@@ -13,6 +13,7 @@ pub use self::types::{
   GitTm,
   SortDirection,
   Repository,
+  OrganizationName,
 };
 
 mod types {
@@ -39,6 +40,7 @@ mod types {
   pub type Sha = String;
   pub type Url = String;
   pub type Filename = String;
+  pub type OrganizationName = String;
   pub type GitErr = Error;
 
   #[derive(Debug)]
