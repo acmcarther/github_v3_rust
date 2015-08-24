@@ -36,7 +36,6 @@ mod github_client {
     GitErr::new(ErrorKind::Other, "Encode failed: ".to_owned() + &err.to_string())
   }
 
-
   fn deserialize<S: Decodable>(response: Response) -> Result<S, GitErr> {
     let mut response = response;
     let mut buf = String::new();
