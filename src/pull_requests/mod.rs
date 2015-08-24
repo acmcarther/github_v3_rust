@@ -40,7 +40,8 @@ mod pull_requests {
     DeleteCommentStatus,
   };
 
-  use pull_requests::url_builders;
+  use pull_requests::url_builders as pr_url_builders;
+  use commit_comments::url_builders as cc_url_builders;
 
   use commits::types::GithubCommit;
 
@@ -68,7 +69,7 @@ mod pull_requests {
 
   impl<S: Scheme + Any> PullRequester for GithubClient<S> where S::Err: 'static {
     fn list(self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, GitErr> {
-      let url = url_builders::pull_requests(&repo);
+      let url = pr_url_builders::pull_requests(&repo);
       match query {
         Some(query) => self.request_with_payload(Method::Post, url, query),
         None => self.request_without_payload(Method::Get, url)
@@ -76,32 +77,32 @@ mod pull_requests {
     }
 
     fn get_pr(self, repo: Repository, pr_id: PullRequestId) -> Result<PullRequest, GitErr> {
-      let url = url_builders::pull_request_at(&repo, &pr_id);
+      let url = pr_url_builders::pull_request_at(&repo, &pr_id);
       self.request_without_payload(Method::Get, url)
     }
 
     fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, GitErr> {
-      let url = url_builders::pull_requests(&repo);
+      let url = pr_url_builders::pull_requests(&repo);
       self.request_with_payload(Method::Post, url, details)
     }
 
     fn create_from_issue(self, repo: Repository, details: CreatePullRequestFromIssue) -> Result<PullRequest, GitErr> {
-      let url = url_builders::pull_requests(&repo);
+      let url = pr_url_builders::pull_requests(&repo);
       self.request_with_payload(Method::Post, url, details)
     }
 
     fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, GitErr> {
-      let url = url_builders::pull_request_at(&pull_request.repo, &pull_request.pull_request_id);
+      let url = pr_url_builders::pull_request_at(&pull_request.repo, &pull_request.pull_request_id);
       self.request_with_payload(Method::Patch, url, update)
     }
 
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<GithubCommit>, GitErr> {
-      let url = url_builders::pull_request_commits(&pull_request.repo, &pull_request.pull_request_id);
+      let url = pr_url_builders::pull_request_commits(&pull_request.repo, &pull_request.pull_request_id);
       self.request_without_payload(Method::Get, url)
     }
 
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, GitErr> {
-      let url = url_builders::pull_request_files(&pull_request.repo, &pull_request.pull_request_id);
+      let url = pr_url_builders::pull_request_files(&pull_request.repo, &pull_request.pull_request_id);
       self.request_without_payload(Method::Get, url)
     }
 
@@ -118,32 +119,32 @@ mod pull_requests {
     }
 
     fn list_comments(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr> {
-      let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
+      let url = cc_url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
       self.request_without_payload(Method::Get, url)
     }
 
     fn list_all_pull_request_comments(self, repo: Repository, query: PullRequestCommentQuery) -> Result<Vec<PullRequestComment>, GitErr> {
-      let url = url_builders::all_pull_request_comments(&repo);
+      let url = cc_url_builders::all_pull_request_comments(&repo);
       self.request_with_payload(Method::Patch, url, query)
     }
 
     fn get_single_comment(self, repo: Repository, comment_id: CommentId) -> Result<PullRequestComment, GitErr> {
-      let url = url_builders::pull_request_comment_at(&repo, &comment_id);
+      let url = cc_url_builders::pull_request_comment_at(&repo, &comment_id);
       self.request_without_payload(Method::Get, url)
     }
 
     fn create_comment(self, pull_request: PullRequestReference, comment_details: CreateComment) -> Result<PullRequestComment, GitErr> {
-      let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
+      let url = cc_url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
       self.request_with_payload(Method::Patch, url, comment_details)
     }
 
     fn create_comment_reply(self, pull_request: PullRequestReference, comment_details: ReplyComment) -> Result<PullRequestComment, GitErr> {
-      let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
+      let url = cc_url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
       self.request_with_payload(Method::Patch, url, comment_details)
     }
 
     fn edit_comment(self, repo: Repository, comment_id: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr> {
-      let url = url_builders::pull_request_comment_at(&repo, &comment_id);
+      let url = cc_url_builders::pull_request_comment_at(&repo, &comment_id);
       self.request_with_payload(Method::Patch, url, body)
     }
 
