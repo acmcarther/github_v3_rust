@@ -17,6 +17,9 @@ mod url_builders {
 
   use pull_requests::types::{
     PullRequestId,
+  };
+
+  use commit_comments::types::{
     CommentId
   };
 

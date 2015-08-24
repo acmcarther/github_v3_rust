@@ -9,6 +9,7 @@ extern crate expectest;
 mod commits;
 mod github_client;
 mod pull_requests;
+mod commit_comments;
 mod repos;
 mod types;
 mod users;

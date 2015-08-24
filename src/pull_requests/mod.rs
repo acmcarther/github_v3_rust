@@ -28,6 +28,9 @@ mod pull_requests {
     PullRequestFile,
     PullRequestReference,
     MergedStatus,
+  };
+
+  use commit_comments::types::{
     PullRequestComment,
     PullRequestCommentQuery,
     CommentId,
