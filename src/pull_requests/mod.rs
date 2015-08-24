@@ -47,12 +47,12 @@ mod pull_requests {
 
   use commits::types::GithubCommit;
 
-  fn deserialize<S: Decodable>(response: Response) -> Result<S, DecoderError> {
+  fn deserialize<S: Decodable>(response: Response) -> Result<S, GitErr> {
     let mut response = response;
     let mut buf = String::new();
     let _ = response.read_to_string(&mut buf);
     println!("recv: {}", buf);
-    json::decode(&buf)
+    json::decode(&buf).map_err(decode_err_to_git_err)
   }
 
   fn decode_err_to_git_err(err: DecoderError) -> GitErr {
@@ -95,12 +95,12 @@ mod pull_requests {
           query_res
             .map_err(encode_err_to_git_err)
             .and_then(|query| self.get(url, Some(query)))
-            .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+            .and_then(deserialize)
         },
         None => {
           self
             .get(url, None)
-            .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+            .and_then(deserialize)
         }
       }
     }
@@ -109,7 +109,7 @@ mod pull_requests {
       let url = url_builders::pull_request_at(&repo, &pr_id);
       self
         .get(url, None)
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, GitErr> {
@@ -118,7 +118,7 @@ mod pull_requests {
       details_body
         .map_err(encode_err_to_git_err)
         .and_then(|details| self.post(url, Some(details)))
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn create_from_issue(self, repo: Repository, details: CreatePullRequestFromIssue) -> Result<PullRequest, GitErr> {
@@ -127,7 +127,7 @@ mod pull_requests {
       details_body
         .map_err(encode_err_to_git_err)
         .and_then(|details| self.post(url, Some(details)))
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, GitErr> {
@@ -136,21 +136,21 @@ mod pull_requests {
       update_body
         .map_err(encode_err_to_git_err)
         .and_then(|update| self.patch(url, Some(update)))
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<GithubCommit>, GitErr> {
       let url = url_builders::pull_request_commits(&pull_request.repo, &pull_request.pull_request_id);
       self
         .get(url, None)
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn list_files(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestFile>, GitErr> {
       let url = url_builders::pull_request_files(&pull_request.repo, &pull_request.pull_request_id);
       self
         .get(url, None)
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     #[allow(dead_code, unused_variables)]
@@ -169,7 +169,7 @@ mod pull_requests {
       let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
       self
         .get(url, None)
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     /////////////////////
@@ -182,14 +182,14 @@ mod pull_requests {
       query_body
         .map_err(encode_err_to_git_err)
         .and_then(|query| self.get(url, Some(query)))
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn get_single_comment(self, repo: Repository, comment_id: CommentId) -> Result<PullRequestComment, GitErr> {
       let url = url_builders::pull_request_comment_at(&repo, &comment_id);
       self
         .get(url, None)
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn create_comment(self, pull_request: PullRequestReference, comment_details: CreateComment) -> Result<PullRequestComment, GitErr> {
@@ -198,7 +198,7 @@ mod pull_requests {
       comment_detail
         .map_err(encode_err_to_git_err)
         .and_then(|comment_detail| self.post(url, Some(comment_detail)))
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn create_comment_reply(self, pull_request: PullRequestReference, comment_details: ReplyComment) -> Result<PullRequestComment, GitErr> {
@@ -207,7 +207,7 @@ mod pull_requests {
       comment_detail
         .map_err(encode_err_to_git_err)
         .and_then(|body| self.post(url, Some(body)))
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     fn edit_comment(self, repo: Repository, comment_id: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr> {
@@ -216,7 +216,7 @@ mod pull_requests {
       body
         .map_err(encode_err_to_git_err)
         .and_then(|body| self.patch(url, Some(body)))
-        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        .and_then(deserialize)
     }
 
     #[allow(dead_code, unused_variables)]
