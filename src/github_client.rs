@@ -27,23 +27,28 @@ mod github_client {
       GithubClient { client: Client::new(), token: token }
     }
 
-    pub fn get(self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
+    pub fn get(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
       let initial_request = self.client.get(&url);
       self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
     }
 
-    pub fn post(self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
+    pub fn post(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
       let initial_request = self.client.post(&url);
       self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
     }
 
-    pub fn put(self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
+    pub fn put(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
       let initial_request = self.client.put(&url);
       self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
     }
 
-    pub fn patch(self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
+    pub fn patch(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
       let initial_request = self.client.request(Method::Patch, &url);
+      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
+    }
+
+    pub fn request(&self, method: Method, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
+      let initial_request = self.client.request(method, &url);
       self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
     }
 

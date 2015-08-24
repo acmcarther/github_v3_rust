@@ -4,7 +4,7 @@ pub mod url_builders;
 mod pull_requests {
   use hyper::header::Scheme;
   use hyper::client::response::Response;
-  use rustc_serialize::Decodable;
+  use hyper::method::Method;
   use rustc_serialize::json::{DecoderError, EncoderError};
 
   use github_client::GithubClient;
@@ -14,12 +14,15 @@ mod pull_requests {
   use std::io::ErrorKind;
 
   use rustc_serialize::{
-    json
+    json,
+    Encodable,
+    Decodable
   };
 
   use types::{
     GitErr,
     Repository,
+    Url,
   };
 
   use pull_requests::types::{
@@ -65,6 +68,9 @@ mod pull_requests {
 
 
   pub trait PullRequester {
+    // TODO: FUN!
+    fn method_with_url_and_query<D: Decodable, E: Encodable>(&self, url: Url, method: Method, body: E) -> Result<D, GitErr>;
+
     fn list(self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, GitErr>;
     fn get_pr(self, repo: Repository, pr_id: PullRequestId) -> Result<PullRequest, GitErr>;
     fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, GitErr>;
@@ -114,29 +120,17 @@ mod pull_requests {
 
     fn create_raw(self, repo: Repository, details: CreatePullRequest) -> Result<PullRequest, GitErr> {
       let url = url_builders::pull_requests(&repo);
-      let details_body = json::encode(&details);
-      details_body
-        .map_err(encode_err_to_git_err)
-        .and_then(|details| self.post(url, Some(details)))
-        .and_then(deserialize)
+      self.method_with_url_and_query(url, Method::Post, details)
     }
 
     fn create_from_issue(self, repo: Repository, details: CreatePullRequestFromIssue) -> Result<PullRequest, GitErr> {
       let url = url_builders::pull_requests(&repo);
-      let details_body = json::encode(&details);
-      details_body
-        .map_err(encode_err_to_git_err)
-        .and_then(|details| self.post(url, Some(details)))
-        .and_then(deserialize)
+      self.method_with_url_and_query(url, Method::Post, details)
     }
 
     fn update_pull_request(self, pull_request: PullRequestReference, update: PullRequestUpdate) -> Result<PullRequest, GitErr> {
       let url = url_builders::pull_request_at(&pull_request.repo, &pull_request.pull_request_id);
-      let update_body = json::encode(&update);
-      update_body
-        .map_err(encode_err_to_git_err)
-        .and_then(|update| self.patch(url, Some(update)))
-        .and_then(deserialize)
+      self.method_with_url_and_query(url, Method::Patch, update)
     }
 
     fn list_commits(self, pull_request: PullRequestReference) -> Result<Vec<GithubCommit>, GitErr> {
@@ -173,16 +167,19 @@ mod pull_requests {
     }
 
     /////////////////////
-    //fn get_with_url_and_query(self, 
+    fn method_with_url_and_query<D: Decodable, E: Encodable>(&self, url: Url, method: Method, body: E) -> Result<D, GitErr> {
+      let encoded_body = json::encode(&body);
+      encoded_body
+        .map_err(encode_err_to_git_err)
+        .and_then(|query| self.request(method, url, Some(query)))
+        .and_then(deserialize)
+
+    }
     /////////////////////
 
     fn list_all_pull_request_comments(self, repo: Repository, query: PullRequestCommentQuery) -> Result<Vec<PullRequestComment>, GitErr> {
       let url = url_builders::all_pull_request_comments(&repo);
-      let query_body = json::encode(&query);
-      query_body
-        .map_err(encode_err_to_git_err)
-        .and_then(|query| self.get(url, Some(query)))
-        .and_then(deserialize)
+      self.method_with_url_and_query(url, Method::Patch, query)
     }
 
     fn get_single_comment(self, repo: Repository, comment_id: CommentId) -> Result<PullRequestComment, GitErr> {
@@ -194,29 +191,17 @@ mod pull_requests {
 
     fn create_comment(self, pull_request: PullRequestReference, comment_details: CreateComment) -> Result<PullRequestComment, GitErr> {
       let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
-      let comment_detail = json::encode(&comment_details);
-      comment_detail
-        .map_err(encode_err_to_git_err)
-        .and_then(|comment_detail| self.post(url, Some(comment_detail)))
-        .and_then(deserialize)
+      self.method_with_url_and_query(url, Method::Patch, comment_details)
     }
 
     fn create_comment_reply(self, pull_request: PullRequestReference, comment_details: ReplyComment) -> Result<PullRequestComment, GitErr> {
       let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
-      let comment_detail = json::encode(&comment_details);
-      comment_detail
-        .map_err(encode_err_to_git_err)
-        .and_then(|body| self.post(url, Some(body)))
-        .and_then(deserialize)
+      self.method_with_url_and_query(url, Method::Patch, comment_details)
     }
 
     fn edit_comment(self, repo: Repository, comment_id: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr> {
       let url = url_builders::pull_request_comment_at(&repo, &comment_id);
-      let body = json::encode(&body);
-      body
-        .map_err(encode_err_to_git_err)
-        .and_then(|body| self.patch(url, Some(body)))
-        .and_then(deserialize)
+      self.method_with_url_and_query(url, Method::Patch, body)
     }
 
     #[allow(dead_code, unused_variables)]
