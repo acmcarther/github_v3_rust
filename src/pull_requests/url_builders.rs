@@ -6,6 +6,7 @@ pub use self::url_builders::{
   pull_request_merge,
   pull_request_comments,
   all_pull_request_comments,
+  pull_request_comment_at,
 };
 
 mod url_builders {

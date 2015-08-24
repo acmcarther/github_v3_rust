@@ -82,12 +82,12 @@ mod pull_requests {
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, GitErr>;
     fn list_comments(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr>;
     fn list_all_pull_request_comments(self, repo: Repository, query: PullRequestCommentQuery) -> Result<Vec<PullRequestComment>, GitErr>;
-    fn get_single_comment(self, repo: Repository, comment: CommentId) -> Result<PullRequestComment, GitErr>;
+    fn get_single_comment(self, repo: Repository, comment_id: CommentId) -> Result<PullRequestComment, GitErr>;
     fn create_comment(self, pull_request: PullRequestReference, comment_details: CreateComment) -> Result<PullRequestComment, GitErr>;
     fn create_comment_reply(self, pull_request: PullRequestReference, comment_details: ReplyComment) -> Result<PullRequestComment, GitErr>;
-    fn edit_comment(self, repo: Repository, comment: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr>;
+    fn edit_comment(self, repo: Repository, comment_id: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr>;
     #[allow(dead_code, unused_variables)]
-    fn delete_comment(self, repo: Repository, comment: CommentId) -> Result<DeleteCommentStatus, GitErr>;
+    fn delete_comment(self, repo: Repository, comment_id: CommentId) -> Result<DeleteCommentStatus, GitErr>;
   }
 
   impl<S: Scheme + Any> PullRequester for GithubClient<S> where S::Err: 'static {
@@ -200,28 +200,51 @@ mod pull_requests {
         })
     }
 
-    fn get_single_comment(self, repo: Repository, comment: CommentId) -> Result<PullRequestComment, GitErr> {
-      // TODO:
-      Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+    fn get_single_comment(self, repo: Repository, comment_id: CommentId) -> Result<PullRequestComment, GitErr> {
+      let url = url_builders::pull_request_comment_at(&repo, &comment_id);
+      self.get(url, None)
+        .map_err(net_err_to_git_err)
+        .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
     }
 
     fn create_comment(self, pull_request: PullRequestReference, comment_details: CreateComment) -> Result<PullRequestComment, GitErr> {
-      // TODO:
-      Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+      let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
+      let comment_detail = json::encode(&comment_details);
+      comment_detail
+        .map_err(encode_err_to_git_err)
+        .and_then(|comment_detail| {
+          self.post(url, Some(comment_detail))
+            .map_err(net_err_to_git_err)
+            .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        })
     }
 
     fn create_comment_reply(self, pull_request: PullRequestReference, comment_details: ReplyComment) -> Result<PullRequestComment, GitErr> {
-      // TODO:
-      Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+      let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
+      let comment_detail = json::encode(&comment_details);
+      comment_detail
+        .map_err(encode_err_to_git_err)
+        .and_then(|body| {
+          self.post(url, Some(body))
+            .map_err(net_err_to_git_err)
+            .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        })
     }
 
-    fn edit_comment(self, repo: Repository, comment: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr> {
-      // TODO:
-      Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+    fn edit_comment(self, repo: Repository, comment_id: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr> {
+      let url = url_builders::pull_request_comment_at(&repo, &comment_id);
+      let body = json::encode(&body);
+      body
+        .map_err(encode_err_to_git_err)
+        .and_then(|body| {
+          self.patch(url, Some(body))
+            .map_err(net_err_to_git_err)
+            .and_then(|res| deserialize(res).map_err(decode_err_to_git_err))
+        })
     }
 
     #[allow(dead_code, unused_variables)]
-    fn delete_comment(self, repo: Repository, comment: CommentId) -> Result<DeleteCommentStatus, GitErr> {
+    fn delete_comment(self, repo: Repository, comment_id: CommentId) -> Result<DeleteCommentStatus, GitErr> {
       // TODO:
       Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
     }
@@ -305,6 +328,14 @@ mod pull_requests {
       let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
       let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
       let pull_requests = client.list_all_pull_request_comments(Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }, PullRequestCommentQuery {sort: Some(PullRequestCommentSortable::Created), direction: Some(SortDirection::Descending), since: None});
+      println!("{:?}", pull_requests)
+    }
+
+    //#[test]
+    fn pull_request_comment_at_works() {
+      let token = env::var("CATALYST_GITHUB_OAUTH_TOKEN").unwrap();
+      let client = GithubClient::new(Some(Authorization("token ".to_owned() + &token)));
+      let pull_requests = client.get_single_comment(Repository { owner: "pt-195".to_owned(), repo_name: "test".to_owned() }, 37711288);
       println!("{:?}", pull_requests)
     }
   }
