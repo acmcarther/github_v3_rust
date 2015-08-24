@@ -8,9 +8,15 @@ mod github_client {
   use hyper::client::response::Response;
   use hyper::error::Error as HyperError;
   use hyper::client::{RequestBuilder, IntoUrl};
+  use rustc_serialize::json::{DecoderError, EncoderError};
+  use rustc_serialize::{
+    json,
+    Encodable,
+    Decodable
+  };
 
   use types::{GitErr, Url, Body};
-  use std::io::ErrorKind;
+  use std::io::{Read, ErrorKind};
   use std::any::Any;
 
   pub struct GithubClient<S: Scheme + Any> where S::Err: 'static {
@@ -22,32 +28,43 @@ mod github_client {
     GitErr::new(ErrorKind::Other, "Request failed: ".to_owned() + &err.to_string())
   }
 
+  fn decode_err_to_git_err(err: DecoderError) -> GitErr {
+    GitErr::new(ErrorKind::Other, "Decode failed: ".to_owned() + &err.to_string())
+  }
+
+  fn encode_err_to_git_err(err: EncoderError) -> GitErr {
+    GitErr::new(ErrorKind::Other, "Encode failed: ".to_owned() + &err.to_string())
+  }
+
+
+  fn deserialize<S: Decodable>(response: Response) -> Result<S, GitErr> {
+    let mut response = response;
+    let mut buf = String::new();
+    let _ = response.read_to_string(&mut buf);
+    println!("recv: {}", buf);
+    json::decode(&buf).map_err(decode_err_to_git_err)
+  }
+
   impl<S:Scheme + Any> GithubClient<S> where S::Err: 'static {
     pub fn new(token: Option<Authorization<S>>) -> GithubClient<S> {
       GithubClient { client: Client::new(), token: token }
     }
 
-    pub fn get(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
-      let initial_request = self.client.get(&url);
-      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
+    pub fn request_without_payload<D: Decodable>(&self, method: Method, url: Url) -> Result<D, GitErr> {
+      self
+        .request(method, url, None)
+        .and_then(deserialize)
     }
 
-    pub fn post(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
-      let initial_request = self.client.post(&url);
-      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
+    pub fn request_with_payload<D: Decodable, E: Encodable>(&self, method: Method, url: Url, body: E) -> Result<D, GitErr> {
+      let encoded_body = json::encode(&body);
+      encoded_body
+        .map_err(encode_err_to_git_err)
+        .and_then(|query| self.request(method, url, Some(query)))
+        .and_then(deserialize)
     }
 
-    pub fn put(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
-      let initial_request = self.client.put(&url);
-      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
-    }
-
-    pub fn patch(&self, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
-      let initial_request = self.client.request(Method::Patch, &url);
-      self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
-    }
-
-    pub fn request(&self, method: Method, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
+    fn request(&self, method: Method, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
       let initial_request = self.client.request(method, &url);
       self.build_common_request(initial_request, body.unwrap_or("".to_owned()).as_ref())
     }
