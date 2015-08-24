@@ -1,17 +1,47 @@
 pub use self::types::{
   Repo,
   RepoPermissions,
+  RepoQuery,
+  RepoVisibility,
+  RepoAffiliations,
+  RepoSortables,
+  CreateRepository,
+  EditRepository,
+  ContributorsQuery,
+  LanguagePile,
+  Team,
+  Tag,
+  Branch,
+  FullBranch,
+  DeletedStatus,
+  Organization
 };
 
 mod types {
+  use std::collections::HashMap;
+
+  use rustc_serialize::{
+    Decodable,
+    Decoder,
+    Encodable,
+    Encoder,
+  };
+
   use types::{
     RepoName,
     BranchName,
     Url,
     GitTm,
+    SortDirection,
+    Message,
+    UserName,
   };
 
   use users::types::User;
+  use commits::types::{
+    CommitTreeNode,
+    GithubCommit
+  };
 
   #[derive(RustcDecodable, Debug)]
   pub struct RepoPermissions {
@@ -22,7 +52,7 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct Repo {
-    id: u32,
+    id: u32, // TODO: This id
     owner: User,
     name: RepoName,
     full_name: RepoName,
@@ -86,7 +116,193 @@ mod types {
     pushed_at: GitTm,
     created_at: GitTm,
     updated_at: GitTm,
-    permissions: Option<RepoPermissions>
+    permissions: Option<RepoPermissions>,
+    subscribers_count: Option<u32>,
+    organization: Option<Organization>,
+    parent: Option<Box<Repo>>,
+    source: Option<Box<Repo>>,
   }
 
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct Organization {
+    login: UserName,
+    id: u32,
+    avatar_url: Url,
+    gravatar_id: String,
+    url: Url,
+    html_url: Url,
+    followers_url: Url,
+    following_url: Url,
+    gists_url: Url,
+    subscriptions_url: Url,
+    organizations_url: Url,
+    repos_url: Url,
+    events_url: Url,
+    received_events_url: Url,
+    // type: String   TODO: Custom decode for this key
+    site_admin: bool
+  }
+
+  #[derive(RustcEncodable, Debug)]
+  pub struct RepoQuery {
+    visibility: Option<RepoVisibility>,
+    affliation: Option<RepoAffiliations>,
+    sort: Option<RepoSortables>,
+    direction: Option<SortDirection>
+  }
+
+  #[derive(Debug)]
+  pub enum RepoVisibility {
+    Public,
+    Private,
+    All
+  }
+
+  impl Decodable for RepoVisibility {
+    fn decode<D: Decoder>(d: &mut D) -> Result<RepoVisibility, D::Error> {
+      d
+        .read_str()
+        .and_then(|state_str| {
+          match state_str.as_ref() {
+            "public" => Ok(RepoVisibility::Public),
+            "private" => Ok(RepoVisibility::Private),
+            "all" => Ok(RepoVisibility::All),
+            _ => {
+              let err_str = "no matching repo visibility for ".to_owned() + &state_str;
+              Err(d.error(&err_str))
+            }
+          }
+        })
+    }
+  }
+
+  impl Encodable for RepoVisibility {
+    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+      let state_str =
+        match *self {
+          RepoVisibility::Public => "public",
+          RepoVisibility::Private => "private",
+          RepoVisibility::All => "all"
+        };
+      s.emit_str(state_str)
+    }
+  }
+
+  // TODO: Make this a proper product type
+  pub type RepoAffiliations = String;
+
+  #[derive(Debug)]
+  pub enum RepoSortables {
+    Updated,
+    Pushed,
+    FullName,
+  }
+
+  impl Decodable for RepoSortables {
+    fn decode<D: Decoder>(d: &mut D) -> Result<RepoSortables, D::Error> {
+      d
+        .read_str()
+        .and_then(|state_str| {
+          match state_str.as_ref() {
+            "updated" => Ok(RepoSortables::Updated),
+            "pushed" => Ok(RepoSortables::Pushed),
+            "full_name" => Ok(RepoSortables::FullName),
+            _ => {
+              let err_str = "no matching repo sortable for ".to_owned() + &state_str;
+              Err(d.error(&err_str))
+            }
+          }
+        })
+    }
+  }
+
+  impl Encodable for RepoSortables {
+    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+      let state_str =
+        match *self {
+          RepoSortables::Updated => "updated",
+          RepoSortables::Pushed => "pushed",
+          RepoSortables::FullName => "full_name"
+        };
+      s.emit_str(state_str)
+    }
+  }
+
+  #[derive(RustcEncodable, Debug)]
+  pub struct CreateRepository {
+    name: RepoName,
+    description: Option<Message>,
+    homepage: Option<Url>,
+    private: Option<bool>,
+    has_issues: Option<bool>,
+    has_wiki: Option<bool>,
+    has_downloads: Option<bool>,
+    team_id: Option<u32>,
+    auto_init: Option<bool>,
+    gitignore_template: Option<String>,
+    license_template: Option<String>
+  }
+
+  #[derive(RustcEncodable, Debug)]
+  pub struct EditRepository {
+    name: RepoName,
+    description: Option<Message>,
+    homepage: Option<Url>,
+    private: Option<bool>,
+    has_issues: Option<bool>,
+    has_wiki: Option<bool>,
+    has_downloads: Option<bool>,
+    default_branch: Option<BranchName>
+  }
+
+  #[derive(RustcEncodable, Debug)]
+  pub struct ContributorsQuery {
+    anon: bool
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct LanguagePile(HashMap<String, u32>); // TODO: Types
+
+  // TODO: Types
+  #[derive(RustcDecodable, Debug)]
+  pub struct Team {
+    id: u32,
+    url: Url,
+    name: String,
+    slug: String,
+    description: String,
+    privacy: String,
+    permission: String,
+    members_url: Url,
+    repositories_url: Url,
+  }
+
+  // TODO: Types
+  #[derive(RustcDecodable, Debug)]
+  pub struct Tag {
+    name: String,
+    commit: CommitTreeNode,
+    zipball_url: Url,
+    tarball_url: Url
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct Branch {
+    name: BranchName,
+    commit: CommitTreeNode,
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct FullBranch {
+    name: BranchName,
+    commit: GithubCommit
+    // TODO: _links
+  }
+
+  #[allow(dead_code)]
+  pub enum DeletedStatus {
+    Deleted,
+    NotDeleted
+  }
 }

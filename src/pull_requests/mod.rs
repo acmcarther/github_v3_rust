@@ -30,7 +30,7 @@ mod pull_requests {
     MergedStatus,
   };
 
-  use pull_requests::url_builders as url_builders;
+  use pull_requests::url_builders;
 
   use commits::types::GithubCommit;
 

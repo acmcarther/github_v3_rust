@@ -1,6 +1,7 @@
 pub use self::types::{
   Commit,
   GithubCommit,
+  CommitTreeNode,
 };
 
 mod types {
