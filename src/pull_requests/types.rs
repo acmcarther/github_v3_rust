@@ -91,11 +91,11 @@ mod types {
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct PullRequestQuery {
-    state: Option<PullRequestStateQuery>,
-    head: Option<HeadQuery>,
-    base: Option<BranchName>,
-    sort: Option<PullRequestSortables>,
-    direction: Option<SortDirection>,
+    pub state: Option<PullRequestStateQuery>,
+    pub head: Option<HeadQuery>,
+    pub base: Option<BranchName>,
+    pub sort: Option<PullRequestSortables>,
+    pub direction: Option<SortDirection>,
   }
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
