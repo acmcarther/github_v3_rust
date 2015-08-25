@@ -9,10 +9,10 @@ mod url_builders {
   use types::{
     Repository,
     Url,
+    IssueId,
   };
 
   use issue_comments::types::{
-    IssueId,
     CommentId
   };
 
