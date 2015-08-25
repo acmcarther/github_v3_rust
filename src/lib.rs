@@ -31,3 +31,6 @@ pub use pull_requests::PullRequester;
 
 pub use repos::types as repo_types;
 pub use repos::Repoer;
+
+pub use hyper::header::Authorization;
+pub use hyper::method::Method;
