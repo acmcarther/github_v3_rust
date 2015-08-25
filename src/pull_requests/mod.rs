@@ -1,3 +1,7 @@
+pub use self::pull_requests::{
+  PullRequester
+};
+
 pub mod types;
 pub mod url_builders;
 

@@ -1,3 +1,7 @@
+pub use self::commit_comments::{
+  CommitCommenter
+};
+
 pub mod types;
 pub mod url_builders;
 

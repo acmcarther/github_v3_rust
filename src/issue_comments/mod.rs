@@ -1,3 +1,7 @@
+pub use self::issue_comments::{
+  IssueCommenter
+};
+
 pub mod types;
 pub mod url_builders;
 

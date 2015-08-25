@@ -1,3 +1,7 @@
+pub use self::repos::{
+  Repoer
+};
+
 pub mod types;
 pub mod url_builders;
 
