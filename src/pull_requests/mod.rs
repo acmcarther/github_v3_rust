@@ -10,7 +10,6 @@ mod pull_requests {
   use std::any::Any;
   use std::io::ErrorKind;
 
-
   use types::{
     GitErr,
     Repository,

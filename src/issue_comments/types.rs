@@ -1,5 +1,12 @@
 pub use self::types::{
-  CommentId
+  CommentId,
+  ListIssueCommentsQuery,
+  ListRepoCommentsQuery,
+  CommentSortables,
+  CreateComment,
+  EditComment,
+  DeleteCommentStatus,
+  IssueComment,
 };
 
 mod types {
@@ -15,7 +22,6 @@ mod types {
     Url,
     GitTm,
     SortDirection,
-    IssueId
   };
 
   use users::types::User;
@@ -48,11 +54,11 @@ mod types {
   }
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
-  pub struct NewComment {
+  pub struct CreateComment {
     body: Message
   }
 
-  pub type EditComment = NewComment;
+  pub type EditComment = CreateComment;
 
   #[allow(dead_code)]
   pub enum DeleteCommentStatus {
