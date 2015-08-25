@@ -1,6 +1,9 @@
-pub use self::github_client::GithubClient;
+pub use self::github_client::{
+  GithubClient,
+  SimpleClient
+};
 
-mod github_client {
+pub mod github_client {
   use hyper::Client;
   use hyper::header::{Accept, Authorization, Connection, qitem, Scheme, UserAgent};
   use hyper::mime::{Mime, TopLevel, SubLevel};
@@ -44,23 +47,15 @@ mod github_client {
     json::decode(&buf).map_err(decode_err_to_git_err)
   }
 
+  // TODO: Remove
+  pub trait SimpleClient {
+    fn request_without_payload<D: Decodable>(&self, method: Method, url: Url) -> Result<D, GitErr>;
+    fn request_with_payload<D: Decodable, E: Encodable>(&self, method: Method, url: Url, body: E) -> Result<D, GitErr>;
+  }
+
   impl<S:Scheme + Any> GithubClient<S> where S::Err: 'static {
     pub fn new(token: Option<Authorization<S>>) -> GithubClient<S> {
       GithubClient { client: Client::new(), token: token }
-    }
-
-    pub fn request_without_payload<D: Decodable>(&self, method: Method, url: Url) -> Result<D, GitErr> {
-      self
-        .request(method, url, None)
-        .and_then(deserialize)
-    }
-
-    pub fn request_with_payload<D: Decodable, E: Encodable>(&self, method: Method, url: Url, body: E) -> Result<D, GitErr> {
-      let encoded_body = json::encode(&body);
-      encoded_body
-        .map_err(encode_err_to_git_err)
-        .and_then(|query| self.request(method, url, Some(query)))
-        .and_then(deserialize)
     }
 
     fn request(&self, method: Method, url: Url, body: Option<Body>) -> Result<Response, GitErr> {
@@ -82,6 +77,22 @@ mod github_client {
       };
 
       auth_request.body(body).send().map_err(net_err_to_git_err)
+    }
+  }
+
+  impl<S:Scheme + Any> SimpleClient for GithubClient<S> where S::Err: 'static {
+    fn request_without_payload<D: Decodable>(&self, method: Method, url: Url) -> Result<D, GitErr> {
+      self
+        .request(method, url, None)
+        .and_then(deserialize)
+    }
+
+    fn request_with_payload<D: Decodable, E: Encodable>(&self, method: Method, url: Url, body: E) -> Result<D, GitErr> {
+      let encoded_body = json::encode(&body);
+      encoded_body
+        .map_err(encode_err_to_git_err)
+        .and_then(|query| self.request(method, url, Some(query)))
+        .and_then(deserialize)
     }
 
   }

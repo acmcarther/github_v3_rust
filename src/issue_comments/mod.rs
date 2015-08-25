@@ -2,12 +2,10 @@ pub mod types;
 pub mod url_builders;
 
 mod issue_comments {
-  use hyper::header::Scheme;
   use hyper::method::Method;
 
-  use github_client::GithubClient;
+  use github_client::{SimpleClient};
 
-  use std::any::Any;
   use std::io::ErrorKind;
 
   use types::{
@@ -38,7 +36,7 @@ mod issue_comments {
     fn delete_comment(&self, repo: Repository, comment_id: CommentId) -> Result<DeleteCommentStatus, GitErr>;
   }
 
-  impl<S: Scheme + Any> IssueCommenter for GithubClient<S> where S::Err: 'static {
+  impl<C: SimpleClient> IssueCommenter for C {
     fn list_in_issue(&self, repo: Repository, issue_id: IssueId, query: Option<ListIssueCommentsQuery>) -> Result<Vec<IssueComment>, GitErr> {
       let url = url_builders::issue_comments(&repo, &issue_id);
       match query {

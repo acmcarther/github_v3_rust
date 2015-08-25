@@ -2,14 +2,11 @@ pub mod types;
 pub mod url_builders;
 
 mod commit_comments {
-  use hyper::header::Scheme;
   use hyper::method::Method;
 
-  use github_client::GithubClient;
+  use github_client::{SimpleClient};
 
-  use std::any::Any;
   use std::io::ErrorKind;
-
 
   use types::{
     GitErr,
@@ -43,7 +40,7 @@ mod commit_comments {
     fn delete_comment(self, repo: Repository, comment_id: CommentId) -> Result<DeleteCommentStatus, GitErr>;
   }
 
-  impl<S: Scheme + Any> CommitCommenter for GithubClient<S> where S::Err: 'static {
+  impl<C: SimpleClient> CommitCommenter for C {
     fn list_comments(self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr> {
       let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
       self.request_without_payload(Method::Get, url)

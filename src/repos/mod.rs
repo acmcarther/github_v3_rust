@@ -2,12 +2,10 @@ pub mod types;
 pub mod url_builders;
 
 mod repos {
-  use hyper::header::Scheme;
   use hyper::method::Method;
 
-  use github_client::GithubClient;
+  use github_client::{SimpleClient};
 
-  use std::any::Any;
   use std::io::ErrorKind;
 
   use types::{
@@ -55,7 +53,7 @@ mod repos {
     fn delete_repo(&self, repo: Repository) -> Result<DeletedStatus, GitErr>;
   }
 
-  impl<S: Scheme + Any> Repoer for GithubClient<S> where S::Err: 'static {
+  impl<C: SimpleClient> Repoer for C {
     fn list_own_repos(&self, query: RepoQuery) -> Result<Vec<Repo>, GitErr> {
       let url = url_builders::own_repos();
       self.request_with_payload(Method::Get, url, query)

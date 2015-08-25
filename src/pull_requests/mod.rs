@@ -2,12 +2,10 @@ pub mod types;
 pub mod url_builders;
 
 mod pull_requests {
-  use hyper::header::Scheme;
   use hyper::method::Method;
 
-  use github_client::GithubClient;
+  use github_client::{SimpleClient};
 
-  use std::any::Any;
   use std::io::ErrorKind;
 
   use types::{
@@ -47,7 +45,7 @@ mod pull_requests {
     fn merge(self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, GitErr>;
   }
 
-  impl<S: Scheme + Any> PullRequester for GithubClient<S> where S::Err: 'static {
+  impl<C: SimpleClient> PullRequester for C {
     fn list(self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, GitErr> {
       let url = url_builders::pull_requests(&repo);
       match query {
