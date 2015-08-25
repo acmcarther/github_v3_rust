@@ -53,7 +53,7 @@ mod pull_requests {
     fn list(&self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, GitErr> {
       let url = url_builders::pull_requests(&repo);
       match query {
-        Some(query) => self.request_with_payload(Method::Post, url, query),
+        Some(query) => self.request_with_payload(Method::Get, url, query),
         None => self.request_without_payload(Method::Get, url)
       }
     }
