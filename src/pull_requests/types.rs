@@ -50,33 +50,12 @@ mod types {
     Closed
   }
 
-  impl Decodable for PullRequestState {
-    fn decode<D: Decoder>(d: &mut D) -> Result<PullRequestState, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "open" => Ok(PullRequestState::Open),
-            "closed" => Ok(PullRequestState::Closed),
-            _ => {
-              let err_str = "no matching pull request state for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for PullRequestState {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          PullRequestState::Open => "open",
-          PullRequestState::Closed => "closed"
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    PullRequestState [
+      "open" <=> [PullRequestState::Open],
+      "closed" <=> [PullRequestState::Closed],
+    ]
+  );
 
   #[derive(Debug)]
   pub enum PullRequestStateQuery {
@@ -85,35 +64,13 @@ mod types {
     All
   }
 
-  impl Decodable for PullRequestStateQuery {
-    fn decode<D: Decoder>(d: &mut D) -> Result<PullRequestStateQuery, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "open" => Ok(PullRequestStateQuery::Open),
-            "closed" => Ok(PullRequestStateQuery::Closed),
-            "all" => Ok(PullRequestStateQuery::All),
-            _ => {
-              let err_str = "no matching pull request state query for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for PullRequestStateQuery {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          PullRequestStateQuery::Open => "open",
-          PullRequestStateQuery::Closed => "closed",
-          PullRequestStateQuery::All => "all"
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    PullRequestStateQuery [
+      "open" <=> [PullRequestStateQuery::Open],
+      "closed" <=> [PullRequestStateQuery::Closed],
+      "all" <=> [PullRequestStateQuery::All],
+    ]
+  );
 
   #[derive(Debug)]
   pub enum PullRequestSortables {
@@ -123,37 +80,14 @@ mod types {
     LongRunning,
   }
 
-  impl Decodable for PullRequestSortables {
-    fn decode<D: Decoder>(d: &mut D) -> Result<PullRequestSortables, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "created" => Ok(PullRequestSortables::CreatedAt),
-            "updated" => Ok(PullRequestSortables::UpdatedAt),
-            "popularity" => Ok(PullRequestSortables::CommentCount),
-            "long-running" => Ok(PullRequestSortables::LongRunning),
-            _ => {
-              let err_str = "no matching sort direction for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for PullRequestSortables {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          PullRequestSortables::CreatedAt => "created",
-          PullRequestSortables::UpdatedAt => "updated",
-          PullRequestSortables::CommentCount => "popularity",
-          PullRequestSortables::LongRunning => "long-running",
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    PullRequestSortables [
+      "created" <=> [PullRequestSortables::CreatedAt],
+      "updated" <=> [PullRequestSortables::UpdatedAt],
+      "popularity" <=> [PullRequestSortables::CommentCount],
+      "long-running" <=> [PullRequestSortables::LongRunning],
+    ]
+  );
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct PullRequestQuery {

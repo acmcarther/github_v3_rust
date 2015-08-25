@@ -158,36 +158,13 @@ mod types {
     Private,
     All
   }
-
-  impl Decodable for RepoVisibility {
-    fn decode<D: Decoder>(d: &mut D) -> Result<RepoVisibility, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "public" => Ok(RepoVisibility::Public),
-            "private" => Ok(RepoVisibility::Private),
-            "all" => Ok(RepoVisibility::All),
-            _ => {
-              let err_str = "no matching repo visibility for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for RepoVisibility {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          RepoVisibility::Public => "public",
-          RepoVisibility::Private => "private",
-          RepoVisibility::All => "all"
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    RepoVisibility [
+      "public" <=> [RepoVisibility::Public],
+      "private" <=> [RepoVisibility::Private],
+      "all" <=> [RepoVisibility::All],
+    ]
+  );
 
   // TODO: Make this a proper product type
   pub type RepoAffiliations = String;
@@ -199,53 +176,6 @@ mod types {
     FullName,
   }
 
-  macro_rules! custom_enum_encode {
-    (
-      $enum_ty:ty [ $( $an_enum:pat => $string:expr, )* ]
-    ) => {
-      impl Encodable for $enum_ty {
-        fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-          let state_str =
-            match *self {
-              $($an_enum => $string,)*
-            };
-          s.emit_str(state_str)
-        }
-      }
-    }
-  }
-
-  macro_rules! custom_enum_decode {
-    (
-      $enum_ty:ty [ $( $string:expr => $an_enum:expr, )* ]
-    ) => {
-      impl Decodable for $enum_ty {
-        fn decode<D: Decoder>(d: &mut D) -> Result<$enum_ty, D::Error> {
-          d
-            .read_str()
-            .and_then(|state_str| {
-              match state_str.as_ref() {
-                $($string => Ok($an_enum),)*
-                _ => {
-                  let err_str = "no matching item for ".to_owned() + &state_str;
-                  Err(d.error(&err_str))
-                }
-              }
-            })
-        }
-      }
-    }
-  }
-
-  macro_rules! custom_enum_decode_encode {
-    (
-      $enum_ty:ty [ $($string:tt <=> [$($an_enum:tt)*],)* ]
-    ) => {
-      custom_enum_decode!($enum_ty [ $( $string => $($an_enum)*, )+ ]);
-      custom_enum_encode!($enum_ty [ $( $($an_enum)* => $string, )+ ]);
-    }
-  }
-
   custom_enum_decode_encode!(
     RepoSortables [
       "updated" <=> [RepoSortables::Updated],
@@ -253,8 +183,6 @@ mod types {
       "full_name" <=> [RepoSortables::FullName],
     ]
   );
-
-
 
   #[derive(RustcEncodable, Debug)]
   pub struct CreateRepository {

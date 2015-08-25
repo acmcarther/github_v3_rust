@@ -16,6 +16,7 @@ pub use self::types::{
   OrganizationName,
 };
 
+#[macro_use]
 mod types {
   use time::Tm;
   use time::{
@@ -45,6 +46,57 @@ mod types {
 
   #[derive(Debug)]
   pub struct GitTm(Tm);
+
+  #[macro_export]
+  macro_rules! custom_enum_encode {
+    (
+      $enum_ty:ty [ $( $an_enum:pat => $string:expr, )* ]
+    ) => {
+      impl Encodable for $enum_ty {
+        fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+          let state_str =
+            match *self {
+              $($an_enum => $string,)*
+            };
+          s.emit_str(state_str)
+        }
+      }
+    }
+  }
+
+  #[macro_export]
+  macro_rules! custom_enum_decode {
+    (
+      $enum_ty:ty [ $( $string:expr => $an_enum:expr, )* ]
+    ) => {
+      impl Decodable for $enum_ty {
+        fn decode<D: Decoder>(d: &mut D) -> Result<$enum_ty, D::Error> {
+          d
+            .read_str()
+            .and_then(|state_str| {
+              match state_str.as_ref() {
+                $($string => Ok($an_enum),)*
+                _ => {
+                  let err_str = "no matching item for ".to_owned() + &state_str;
+                  Err(d.error(&err_str))
+                }
+              }
+            })
+        }
+      }
+    }
+  }
+
+  #[macro_export]
+  macro_rules! custom_enum_decode_encode {
+    (
+      $enum_ty:ty [ $($string:tt <=> [$($an_enum:tt)*],)* ]
+    ) => {
+      custom_enum_decode!($enum_ty [ $( $string => $($an_enum)*, )+ ]);
+      custom_enum_encode!($enum_ty [ $( $($an_enum)* => $string, )+ ]);
+    }
+  }
+
 
   impl Decodable for GitTm {
     fn decode<D: Decoder>(d: &mut D) -> Result<GitTm, D::Error> {
@@ -76,33 +128,12 @@ mod types {
     Descending,
   }
 
-  impl Decodable for SortDirection {
-    fn decode<D: Decoder>(d: &mut D) -> Result<SortDirection, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "asc" => Ok(SortDirection::Ascending),
-            "desc" => Ok(SortDirection::Descending),
-            _ => {
-              let err_str = "no matching sort direction for {}".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for SortDirection {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          SortDirection::Ascending => "asc",
-          SortDirection::Descending => "desc",
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    SortDirection [
+      "asc" <=> [SortDirection::Ascending],
+      "desc" <=> [SortDirection::Descending],
+    ]
+  );
 
   pub struct Repository {
     pub owner: UserName,
