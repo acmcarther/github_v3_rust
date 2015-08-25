@@ -13,6 +13,7 @@ mod commits;
 mod github_client;
 mod pull_requests;
 mod commit_comments;
+mod issue_comments;
 mod repos;
 
 mod users;
