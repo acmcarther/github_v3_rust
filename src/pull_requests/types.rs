@@ -107,26 +107,26 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct PullRequest {
-    id: PullRequestId,
-    url: Url,
-    html_url: Url,
-    patch_url: Url,
-    issue_url: Url,
-    commits_url: Url,
-    review_comments_url: Url,
-    review_comment_url: Url,
-    comments_url: Url,
-    number: u32,
-    state: PullRequestState,
-    title: PullRequestTitle,
-    body: Message,
-    created_at: GitTm,
-    updated_at: GitTm,
-    closed_at: Option<GitTm>,
-    merged_at: Option<GitTm>,
-    user: User,
-    head: Commit,
-    base: Commit
+    pub id: PullRequestId,
+    pub url: Url,
+    pub html_url: Url,
+    pub patch_url: Url,
+    pub issue_url: Url,
+    pub commits_url: Url,
+    pub review_comments_url: Url,
+    pub review_comment_url: Url,
+    pub comments_url: Url,
+    pub number: u32,
+    pub state: PullRequestState,
+    pub title: PullRequestTitle,
+    pub body: Message,
+    pub created_at: GitTm,
+    pub updated_at: GitTm,
+    pub closed_at: Option<GitTm>,
+    pub merged_at: Option<GitTm>,
+    pub user: User,
+    pub head: Commit,
+    pub base: Commit
     // TODO: _links
   }
 
