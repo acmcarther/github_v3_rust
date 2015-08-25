@@ -158,36 +158,13 @@ mod types {
     Private,
     All
   }
-
-  impl Decodable for RepoVisibility {
-    fn decode<D: Decoder>(d: &mut D) -> Result<RepoVisibility, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "public" => Ok(RepoVisibility::Public),
-            "private" => Ok(RepoVisibility::Private),
-            "all" => Ok(RepoVisibility::All),
-            _ => {
-              let err_str = "no matching repo visibility for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for RepoVisibility {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          RepoVisibility::Public => "public",
-          RepoVisibility::Private => "private",
-          RepoVisibility::All => "all"
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    RepoVisibility [
+      "public" <=> [RepoVisibility::Public],
+      "private" <=> [RepoVisibility::Private],
+      "all" <=> [RepoVisibility::All],
+    ]
+  );
 
   // TODO: Make this a proper product type
   pub type RepoAffiliations = String;
@@ -199,35 +176,13 @@ mod types {
     FullName,
   }
 
-  impl Decodable for RepoSortables {
-    fn decode<D: Decoder>(d: &mut D) -> Result<RepoSortables, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "updated" => Ok(RepoSortables::Updated),
-            "pushed" => Ok(RepoSortables::Pushed),
-            "full_name" => Ok(RepoSortables::FullName),
-            _ => {
-              let err_str = "no matching repo sortable for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for RepoSortables {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          RepoSortables::Updated => "updated",
-          RepoSortables::Pushed => "pushed",
-          RepoSortables::FullName => "full_name"
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    RepoSortables [
+      "updated" <=> [RepoSortables::Updated],
+      "pushed" <=> [RepoSortables::Pushed],
+      "full_name" <=> [RepoSortables::FullName],
+    ]
+  );
 
   #[derive(RustcEncodable, Debug)]
   pub struct CreateRepository {

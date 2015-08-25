@@ -6,12 +6,15 @@ extern crate rustc_serialize;
 #[macro_use(expect)]
 extern crate expectest;
 
+#[macro_use]
+mod types;
+
 mod commits;
 mod github_client;
 mod pull_requests;
 mod commit_comments;
 mod repos;
-mod types;
+
 mod users;
 
 pub use github_client::GithubClient;

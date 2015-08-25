@@ -61,33 +61,12 @@ mod types {
     Updated
   }
 
-  impl Decodable for PullRequestCommentSortable {
-    fn decode<D: Decoder>(d: &mut D) -> Result<PullRequestCommentSortable, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "created" => Ok(PullRequestCommentSortable::Created),
-            "updated" => Ok(PullRequestCommentSortable::Updated),
-            _ => {
-              let err_str = "no matching pull request comment sortable for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
-    }
-  }
-
-  impl Encodable for PullRequestCommentSortable {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          PullRequestCommentSortable::Created => "created",
-          PullRequestCommentSortable::Updated => "updated"
-        };
-      s.emit_str(state_str)
-    }
-  }
+  custom_enum_decode_encode!(
+    PullRequestCommentSortable [
+      "created" <=> [PullRequestCommentSortable::Created],
+      "updated" <=> [PullRequestCommentSortable::Updated],
+    ]
+  );
 
   #[derive(RustcDecodable, RustcEncodable, Debug)]
   pub struct CreateComment {
