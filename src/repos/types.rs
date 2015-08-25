@@ -199,35 +199,62 @@ mod types {
     FullName,
   }
 
-  impl Decodable for RepoSortables {
-    fn decode<D: Decoder>(d: &mut D) -> Result<RepoSortables, D::Error> {
-      d
-        .read_str()
-        .and_then(|state_str| {
-          match state_str.as_ref() {
-            "updated" => Ok(RepoSortables::Updated),
-            "pushed" => Ok(RepoSortables::Pushed),
-            "full_name" => Ok(RepoSortables::FullName),
-            _ => {
-              let err_str = "no matching repo sortable for ".to_owned() + &state_str;
-              Err(d.error(&err_str))
-            }
-          }
-        })
+  macro_rules! custom_enum_encode {
+    (
+      $enum_ty:ty [ $( $an_enum:pat => $string:expr, )* ]
+    ) => {
+      impl Encodable for $enum_ty {
+        fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+          let state_str =
+            match *self {
+              $($an_enum => $string,)*
+            };
+          s.emit_str(state_str)
+        }
+      }
     }
   }
 
-  impl Encodable for RepoSortables {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-      let state_str =
-        match *self {
-          RepoSortables::Updated => "updated",
-          RepoSortables::Pushed => "pushed",
-          RepoSortables::FullName => "full_name"
-        };
-      s.emit_str(state_str)
+  macro_rules! custom_enum_decode {
+    (
+      $enum_ty:ty [ $( $string:expr => $an_enum:expr, )* ]
+    ) => {
+      impl Decodable for $enum_ty {
+        fn decode<D: Decoder>(d: &mut D) -> Result<$enum_ty, D::Error> {
+          d
+            .read_str()
+            .and_then(|state_str| {
+              match state_str.as_ref() {
+                $($string => Ok($an_enum),)*
+                _ => {
+                  let err_str = "no matching item for ".to_owned() + &state_str;
+                  Err(d.error(&err_str))
+                }
+              }
+            })
+        }
+      }
     }
   }
+
+  macro_rules! custom_enum_decode_encode {
+    (
+      $enum_ty:ty [ $($string:tt <=> [$($an_enum:tt)*],)* ]
+    ) => {
+      custom_enum_decode!($enum_ty [ $( $string => $($an_enum)*, )+ ]);
+      custom_enum_encode!($enum_ty [ $( $($an_enum)* => $string, )+ ]);
+    }
+  }
+
+  custom_enum_decode_encode!(
+    RepoSortables [
+      "updated" <=> [RepoSortables::Updated],
+      "pushed" <=> [RepoSortables::Pushed],
+      "full_name" <=> [RepoSortables::FullName],
+    ]
+  );
+
+
 
   #[derive(RustcEncodable, Debug)]
   pub struct CreateRepository {
