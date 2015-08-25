@@ -30,7 +30,7 @@ mod types {
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct ListIssueCommentsQuery {
-    since: GitTm
+    pub since: GitTm
   }
 
   #[derive(Debug)]
@@ -48,14 +48,14 @@ mod types {
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct ListRepoCommentsQuery {
-    sort: CommentSortables,
-    direction: SortDirection,
-    since: GitTm
+    pub sort: CommentSortables,
+    pub direction: SortDirection,
+    pub since: GitTm
   }
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct CreateComment {
-    body: Message
+    pub body: Message
   }
 
   pub type EditComment = CreateComment;
@@ -68,13 +68,13 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct IssueComment {
-    id: CommentId,
-    url: Url,
-    html_url: Url,
-    body: Message,
-    user: User,
-    created_at: GitTm,
-    updated_at: GitTm
+    pub id: CommentId,
+    pub url: Url,
+    pub html_url: Url,
+    pub body: Message,
+    pub user: User,
+    pub created_at: GitTm,
+    pub updated_at: GitTm
   }
 
 }
