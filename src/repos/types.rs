@@ -14,7 +14,8 @@ pub use self::types::{
   Branch,
   FullBranch,
   DeletedStatus,
-  Organization
+  Organization,
+  PublicReposQuery
 };
 
 mod types {
@@ -259,5 +260,10 @@ mod types {
   pub enum DeletedStatus {
     Deleted,
     NotDeleted
+  }
+
+  #[derive(RustcEncodable, Debug)]
+  pub struct PublicReposQuery {
+    since: String
   }
 }
