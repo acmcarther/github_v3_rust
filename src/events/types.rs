@@ -123,7 +123,7 @@ mod types {
     pub created: bool,
     pub deleted: bool,
     pub forced: bool,
-    pub base_ref: bool,
+    pub base_ref: Option<Sha>,
     pub compare: Url,
     pub commits: Vec<PushCommit>,
     pub head_commit: PushCommit,
