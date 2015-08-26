@@ -31,20 +31,20 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct PullRequestComment {
-    url: Url,
-    id: u32,
-    diff_hunk: String,
-    path: String,
-    position: i32, // TODO: unsigned or signed?
-    original_position: i32,
-    commit_id: Sha,
-    original_commit_id: Sha,
-    user: User,
-    body: Message,
-    created_at: GitTm,
-    updated_at: GitTm,
-    html_url: Url,
-    pull_request_url: Url
+    pub url: Url,
+    pub id: u32,
+    pub diff_hunk: String,
+    pub path: String,
+    pub position: i32, // TODO: unsigned or signed?
+    pub original_position: i32,
+    pub commit_id: Sha,
+    pub original_commit_id: Sha,
+    pub user: User,
+    pub body: Message,
+    pub created_at: GitTm,
+    pub updated_at: GitTm,
+    pub html_url: Url,
+    pub pull_request_url: Url
     // TODO: _links
   }
 
@@ -70,21 +70,21 @@ mod types {
 
   #[derive(RustcDecodable, RustcEncodable, Debug)]
   pub struct CreateComment {
-    body: Message,
-    commit_id: Sha,
-    path: String, // TODO: type for this
-    position: u32, // TODO: type for this
+    pub body: Message,
+    pub commit_id: Sha,
+    pub path: String, // TODO: type for this
+    pub position: u32, // TODO: type for this
   }
 
   #[derive(RustcDecodable, RustcEncodable, Debug)]
   pub struct ReplyComment {
-    body: Message,
-    in_reply_to: CommentId
+    pub body: Message,
+    pub in_reply_to: CommentId
   }
 
   #[derive(RustcDecodable, RustcEncodable, Debug)]
   pub struct EditComment {
-    body: Message
+    pub body: Message
   }
 
   #[allow(dead_code)]

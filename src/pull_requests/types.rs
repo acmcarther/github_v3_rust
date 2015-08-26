@@ -147,8 +147,8 @@ mod types {
 
   #[allow(dead_code)]
   pub struct MergeRequest {
-    commit_message: Option<Message>,
-    sha: Option<Sha>
+    pub commit_message: Option<Message>,
+    pub sha: Option<Sha>
   }
 
   #[allow(dead_code)]
@@ -165,16 +165,16 @@ mod types {
 
   #[derive(RustcEncodable, RustcDecodable, Debug)]
   pub struct PullRequestFile {
-    sha: Sha,
-    filename: Filename,
-    status: String,   // TODO: Bound this in an enum
-    additions: u32,
-    deletions: u32,
-    changes: u32,
-    blob_url: Url,
-    raw_url: Url,
-    contents_url: Url,
-    patch: String  // TODO: Define this type
+    pub sha: Sha,
+    pub filename: Filename,
+    pub status: String,   // TODO: Bound this in an enum
+    pub additions: u32,
+    pub deletions: u32,
+    pub changes: u32,
+    pub blob_url: Url,
+    pub raw_url: Url,
+    pub contents_url: Url,
+    pub patch: String  // TODO: Define this type
   }
 
   pub struct PullRequestReference {

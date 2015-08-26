@@ -19,45 +19,45 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct Commit {
-    label: BranchName,
+    pub label: BranchName,
     // ref TODO: custom decoder for reserved word
-    sha: Sha,
-    user: User,
-    repo: Repo,
+    pub sha: Sha,
+    pub user: User,
+    pub repo: Repo,
   }
 
   #[derive(RustcDecodable, Debug)]
   pub struct GithubCommit {
-    url: Url,
-    sha: Sha,
-    html_url: Url,
-    comments_url: Url,
-    commit: GithubCommitSummary,
-    author: User,
-    committer: User,
-    parents: Vec<CommitTreeNode>
+    pub url: Url,
+    pub sha: Sha,
+    pub html_url: Url,
+    pub comments_url: Url,
+    pub commit: GithubCommitSummary,
+    pub author: User,
+    pub committer: User,
+    pub parents: Vec<CommitTreeNode>
   }
 
   #[derive(RustcDecodable, Debug)]
   pub struct GithubCommitSummary {
-    url: Url,
-    author: CommitAuthor,
-    committer: CommitAuthor,
-    message: Message,
-    tree: CommitTreeNode,
-    comment_count: u32,
+    pub url: Url,
+    pub author: CommitAuthor,
+    pub committer: CommitAuthor,
+    pub message: Message,
+    pub tree: CommitTreeNode,
+    pub comment_count: u32,
   }
 
   #[derive(RustcDecodable, Debug)]
   pub struct CommitAuthor {
-    name: String,
-    email: String,
-    date: GitTm
+    pub name: String,
+    pub email: String,
+    pub date: GitTm
   }
 
   #[derive(RustcDecodable, Debug)]
   pub struct CommitTreeNode {
-    url: Url,
-    sha: Sha,
+    pub url: Url,
+    pub sha: Sha,
   }
 }

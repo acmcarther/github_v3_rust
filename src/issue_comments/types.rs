@@ -7,6 +7,7 @@ pub use self::types::{
   EditComment,
   DeleteCommentStatus,
   IssueComment,
+  Issue,
 };
 
 mod types {
@@ -22,6 +23,7 @@ mod types {
     Url,
     GitTm,
     SortDirection,
+    IssueId,
   };
 
   use users::types::User;
@@ -75,6 +77,19 @@ mod types {
     pub user: User,
     pub created_at: GitTm,
     pub updated_at: GitTm
+  }
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct Issue {
+    pub url: Url,
+    pub labels_url: Url,
+    pub comments_url: Url,
+    pub events_url: Url,
+    pub html_url: Url,
+    pub id: IssueId,
+    pub number: u32,
+    pub title: Message,
+    pub user: User
   }
 
 }

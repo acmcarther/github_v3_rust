@@ -15,6 +15,7 @@ mod pull_requests;
 mod commit_comments;
 mod issue_comments;
 mod repos;
+mod events;
 
 mod users;
 
@@ -28,6 +29,10 @@ pub use issue_comments::IssueCommenter;
 
 pub use pull_requests::types as pull_request_types;
 pub use pull_requests::PullRequester;
+
+pub use users::types as user_types;
+
+pub use events::types as event_types;
 
 pub use repos::types as repo_types;
 pub use repos::Repoer;

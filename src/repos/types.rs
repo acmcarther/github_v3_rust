@@ -46,9 +46,9 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct RepoPermissions {
-    admin: bool,
-    push: bool,
-    pull: bool
+    pub admin: bool,
+    pub push: bool,
+    pub pull: bool
   }
 
   #[derive(RustcDecodable, Debug)]
@@ -127,30 +127,30 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct Organization {
-    login: UserName,
-    id: u32,
-    avatar_url: Url,
-    gravatar_id: String,
-    url: Url,
-    html_url: Url,
-    followers_url: Url,
-    following_url: Url,
-    gists_url: Url,
-    subscriptions_url: Url,
-    organizations_url: Url,
-    repos_url: Url,
-    events_url: Url,
-    received_events_url: Url,
+    pub login: UserName,
+    pub id: u32,
+    pub avatar_url: Url,
+    pub gravatar_id: String,
+    pub url: Url,
+    pub html_url: Url,
+    pub followers_url: Url,
+    pub following_url: Url,
+    pub gists_url: Url,
+    pub subscriptions_url: Url,
+    pub organizations_url: Url,
+    pub repos_url: Url,
+    pub events_url: Url,
+    pub received_events_url: Url,
     // type: String   TODO: Custom decode for this key
-    site_admin: bool
+    pub site_admin: bool
   }
 
   #[derive(RustcEncodable, Debug)]
   pub struct RepoQuery {
-    visibility: Option<RepoVisibility>,
-    affliation: Option<RepoAffiliations>,
-    sort: Option<RepoSortables>,
-    direction: Option<SortDirection>
+    pub visibility: Option<RepoVisibility>,
+    pub affliation: Option<RepoAffiliations>,
+    pub sort: Option<RepoSortables>,
+    pub direction: Option<SortDirection>
   }
 
   #[derive(Debug)]
@@ -187,34 +187,34 @@ mod types {
 
   #[derive(RustcEncodable, Debug)]
   pub struct CreateRepository {
-    name: RepoName,
-    description: Option<Message>,
-    homepage: Option<Url>,
-    private: Option<bool>,
-    has_issues: Option<bool>,
-    has_wiki: Option<bool>,
-    has_downloads: Option<bool>,
-    team_id: Option<u32>,
-    auto_init: Option<bool>,
-    gitignore_template: Option<String>,
-    license_template: Option<String>
+    pub name: RepoName,
+    pub description: Option<Message>,
+    pub homepage: Option<Url>,
+    pub private: Option<bool>,
+    pub has_issues: Option<bool>,
+    pub has_wiki: Option<bool>,
+    pub has_downloads: Option<bool>,
+    pub team_id: Option<u32>,
+    pub auto_init: Option<bool>,
+    pub gitignore_template: Option<String>,
+    pub license_template: Option<String>
   }
 
   #[derive(RustcEncodable, Debug)]
   pub struct EditRepository {
-    name: RepoName,
-    description: Option<Message>,
-    homepage: Option<Url>,
-    private: Option<bool>,
-    has_issues: Option<bool>,
-    has_wiki: Option<bool>,
-    has_downloads: Option<bool>,
-    default_branch: Option<BranchName>
+    pub name: RepoName,
+    pub description: Option<Message>,
+    pub homepage: Option<Url>,
+    pub private: Option<bool>,
+    pub has_issues: Option<bool>,
+    pub has_wiki: Option<bool>,
+    pub has_downloads: Option<bool>,
+    pub default_branch: Option<BranchName>
   }
 
   #[derive(RustcEncodable, Debug)]
   pub struct ContributorsQuery {
-    anon: bool
+    pub anon: bool
   }
 
   #[derive(RustcDecodable, Debug)]
@@ -223,36 +223,36 @@ mod types {
   // TODO: Types
   #[derive(RustcDecodable, Debug)]
   pub struct Team {
-    id: u32,
-    url: Url,
-    name: String,
-    slug: String,
-    description: String,
-    privacy: String,
-    permission: String,
-    members_url: Url,
-    repositories_url: Url,
+    pub id: u32,
+    pub url: Url,
+    pub name: String,
+    pub slug: String,
+    pub description: String,
+    pub privacy: String,
+    pub permission: String,
+    pub members_url: Url,
+    pub repositories_url: Url,
   }
 
   // TODO: Types
   #[derive(RustcDecodable, Debug)]
   pub struct Tag {
-    name: String,
-    commit: CommitTreeNode,
-    zipball_url: Url,
-    tarball_url: Url
+    pub name: String,
+    pub commit: CommitTreeNode,
+    pub zipball_url: Url,
+    pub tarball_url: Url
   }
 
   #[derive(RustcDecodable, Debug)]
   pub struct Branch {
-    name: BranchName,
-    commit: CommitTreeNode,
+    pub name: BranchName,
+    pub commit: CommitTreeNode,
   }
 
   #[derive(RustcDecodable, Debug)]
   pub struct FullBranch {
-    name: BranchName,
-    commit: GithubCommit
+    pub name: BranchName,
+    pub commit: GithubCommit
     // TODO: _links
   }
 
@@ -264,6 +264,6 @@ mod types {
 
   #[derive(RustcEncodable, Debug)]
   pub struct PublicReposQuery {
-    since: String
+    pub since: String
   }
 }
