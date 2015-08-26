@@ -1,5 +1,13 @@
 pub use self::types::{
   IssueCommentEvent,
+  IssueCommentEventType,
+  PullRequestEvent,
+  PullRequestEventType,
+  PullRequestReviewCommentEventType,
+  PullRequestReviewCommentEvent,
+  PushEvent,
+  Pusher,
+  PushCommit,
 };
 
 mod types {
