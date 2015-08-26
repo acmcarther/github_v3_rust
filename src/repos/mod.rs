@@ -37,7 +37,7 @@ mod repos {
 
   use repos::url_builders as url_builders;
 
-  use users::types::User;
+  use users::types::GithubUser;
 
   pub trait Repoer {
     fn list_own_repos(&self, query: RepoQuery) -> Result<Vec<Repo>, GitErr>;
@@ -48,7 +48,7 @@ mod repos {
     fn create_org_repo(&self, org: OrganizationName, details: CreateRepository) -> Result<Repo, GitErr>;
     fn get_repo(&self, repo: Repository) -> Result<Repo, GitErr>;
     fn edit_repo(&self, repo: Repository, details: EditRepository) -> Result<Repo, GitErr>;
-    fn list_contributors(&self, repo: Repository, query: ContributorsQuery) -> Result<Vec<User>, GitErr>;
+    fn list_contributors(&self, repo: Repository, query: ContributorsQuery) -> Result<Vec<GithubUser>, GitErr>;
     fn list_languages(&self, repo: Repository) -> Result<LanguagePile, GitErr>;
     fn list_teams(&self, repo: Repository) -> Result<Vec<Team>, GitErr>;
     fn list_tags(&self, repo: Repository) -> Result<Vec<Tag>, GitErr>;
@@ -101,7 +101,7 @@ mod repos {
       self.request_with_payload(Method::Patch, url, details)
     }
 
-    fn list_contributors(&self, repo: Repository, query: ContributorsQuery) -> Result<Vec<User>, GitErr> {
+    fn list_contributors(&self, repo: Repository, query: ContributorsQuery) -> Result<Vec<GithubUser>, GitErr> {
       let url = url_builders::contributors_at(&repo);
       self.request_with_payload(Method::Get, url, query)
     }

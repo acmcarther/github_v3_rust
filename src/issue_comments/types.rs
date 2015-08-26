@@ -26,7 +26,7 @@ mod types {
     IssueId,
   };
 
-  use users::types::User;
+  use users::types::GithubUser;
 
   pub type CommentId = u32;
 
@@ -74,7 +74,7 @@ mod types {
     pub url: Url,
     pub html_url: Url,
     pub body: Message,
-    pub user: User,
+    pub user: GithubUser,
     pub created_at: GitTm,
     pub updated_at: GitTm
   }
@@ -89,7 +89,7 @@ mod types {
     pub id: IssueId,
     pub number: u32,
     pub title: Message,
-    pub user: User
+    pub user: GithubUser
   }
 
 }

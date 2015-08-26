@@ -1,5 +1,6 @@
 pub use self::types::{
-  User
+  GithubUser,
+  GitUser,
 };
 
 mod types {
@@ -9,7 +10,7 @@ mod types {
   };
 
   #[derive(RustcDecodable, Debug)]
-  pub struct User {
+  pub struct GithubUser {
     pub login: UserName,
     pub id: u32,
     pub avatar_url: Url,
@@ -28,4 +29,11 @@ mod types {
     pub site_admin: bool
   }
 
+
+  #[derive(RustcDecodable, Debug)]
+  pub struct GitUser {
+    pub name: String,
+    pub email: String,
+    pub username: Option<UserName>
+  }
 }

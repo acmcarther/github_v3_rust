@@ -6,7 +6,6 @@ pub use self::types::{
   PullRequestReviewCommentEventType,
   PullRequestReviewCommentEvent,
   PushEvent,
-  Pusher,
   PushCommit,
 };
 
@@ -21,14 +20,16 @@ mod types {
   use types::{
     Url,
     Sha,
-    UserName,
     GitTm,
     Filename,
     Message
   };
 
-  use users::types::User;
-  use repos::types::Repo;
+  use users::types::{
+    GithubUser,
+    GitUser
+  };
+  use repos::types::{Repo, LegacyRepo};
   use issue_comments::types::{
     IssueComment,
     Issue
@@ -59,7 +60,7 @@ mod types {
     pub issue: Issue,
     pub comment: IssueComment,
     pub repository: Repo,
-    pub sender: User
+    pub sender: GithubUser
   }
 
   #[derive(Debug)]
@@ -92,7 +93,7 @@ mod types {
     pub number: u32,
     pub pull_request: PullRequest,
     pub repository: Repo,
-    pub sender: User
+    pub sender: GithubUser
   }
 
   #[derive(Debug)]
@@ -112,7 +113,7 @@ mod types {
     pub comment: PullRequestComment,
     pub pull_request: PullRequest,
     pub repository: Repo,
-    pub sender: User
+    pub sender: GithubUser
   }
 
   #[derive(RustcDecodable, Debug)]
@@ -127,16 +128,9 @@ mod types {
     pub compare: Url,
     pub commits: Vec<PushCommit>,
     pub head_commit: PushCommit,
-    pub repository: Repo,
-    pub pusher: Pusher,
-    //pub sender: User,
-  }
-
-  #[derive(RustcDecodable, Debug)]
-  pub struct Pusher {
-    pub name: String,
-    pub email: String,
-    pub username: Option<UserName>
+    pub repository: LegacyRepo,
+    pub pusher: GitUser,
+    pub sender: GithubUser,
   }
 
   #[derive(RustcDecodable, Debug)]
@@ -146,8 +140,8 @@ mod types {
     pub message: Message,
     pub timestamp: GitTm,
     pub url: Url,
-    pub author: Pusher,
-    pub committer: Pusher,
+    pub author: GitUser,
+    pub committer: GitUser,
     pub added: Vec<Filename>,
     pub removed: Vec<Filename>,
     pub modified: Vec<Filename>,

@@ -14,7 +14,7 @@ mod types {
 
   };
 
-  use users::types::User;
+  use users::types::GithubUser;
   use repos::types::Repo;
 
   #[derive(RustcDecodable, Debug)]
@@ -22,7 +22,7 @@ mod types {
     pub label: BranchName,
     // ref TODO: custom decoder for reserved word
     pub sha: Sha,
-    pub user: User,
+    pub user: GithubUser,
     pub repo: Repo,
   }
 
@@ -33,8 +33,8 @@ mod types {
     pub html_url: Url,
     pub comments_url: Url,
     pub commit: GithubCommitSummary,
-    pub author: User,
-    pub committer: User,
+    pub author: GithubUser,
+    pub committer: GithubUser,
     pub parents: Vec<CommitTreeNode>
   }
 

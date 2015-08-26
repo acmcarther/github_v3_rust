@@ -25,7 +25,7 @@ mod types {
     SortDirection,
   };
 
-  use users::types::User;
+  use users::types::GithubUser;
 
   pub type CommentId = u32;
 
@@ -39,7 +39,7 @@ mod types {
     pub original_position: i32,
     pub commit_id: Sha,
     pub original_commit_id: Sha,
-    pub user: User,
+    pub user: GithubUser,
     pub body: Message,
     pub created_at: GitTm,
     pub updated_at: GitTm,

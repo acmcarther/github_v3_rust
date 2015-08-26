@@ -38,7 +38,7 @@ mod types {
     IssueId
   };
 
-  use users::types::User;
+  use users::types::GithubUser;
   use commits::types::Commit;
 
   pub type PullRequestId = u32;
@@ -124,7 +124,7 @@ mod types {
     pub updated_at: GitTm,
     pub closed_at: Option<GitTm>,
     pub merged_at: Option<GitTm>,
-    pub user: User,
+    pub user: GithubUser,
     pub head: Commit,
     pub base: Commit
     // TODO: _links
