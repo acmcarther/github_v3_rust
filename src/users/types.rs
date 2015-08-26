@@ -10,22 +10,22 @@ mod types {
 
   #[derive(RustcDecodable, Debug)]
   pub struct User {
-    login: UserName,
-    id: u32,
-    avatar_url: Url,
-    gravatar_id: String,  // TODO: What is this
-    html_url: Url,
-    followers_url: Url,
-    following_url: Url,
-    gists_url: Url,
-    starred_url: Url,
-    subscriptions_url: Url,
-    organizations_url: Url,
-    repos_url: Url,
-    events_url: Url,
-    received_events_url: Url,
+    pub login: UserName,
+    pub id: u32,
+    pub avatar_url: Url,
+    pub gravatar_id: String,  // TODO: What is this
+    pub html_url: Url,
+    pub followers_url: Url,
+    pub following_url: Url,
+    pub gists_url: Url,
+    pub starred_url: Url,
+    pub subscriptions_url: Url,
+    pub organizations_url: Url,
+    pub repos_url: Url,
+    pub events_url: Url,
+    pub received_events_url: Url,
     //type: String   // TODO: Custom decode for this reserved word
-    site_admin: bool
+    pub site_admin: bool
   }
 
 }

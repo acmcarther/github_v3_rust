@@ -129,7 +129,7 @@ mod types {
     pub head_commit: PushCommit,
     pub repository: Repo,
     pub pusher: Pusher,
-    pub sender: User,
+    //pub sender: User,
   }
 
   #[derive(RustcDecodable, Debug)]
