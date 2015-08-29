@@ -1,7 +1,8 @@
 use types::{
   Url,
-  PullRequestId,
 };
+
+use types::pull_requests::PullRequestId;
 
 use types::repos::Repository;
 

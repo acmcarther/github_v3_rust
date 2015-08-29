@@ -8,8 +8,9 @@ use std::io::ErrorKind;
 
 use types::{
   GitErr,
-  PullRequestReference,
 };
+
+use types::pull_requests::PullRequestReference;
 
 use types::comments::{
   PullRequestComment,

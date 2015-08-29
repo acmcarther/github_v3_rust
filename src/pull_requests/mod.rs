@@ -8,17 +8,20 @@ use std::io::ErrorKind;
 
 use types::{
   GitErr,
+  MergeRequest,
+  MergedResult,
+  MergedStatus,
+};
+
+use types::pull_requests::{
   PullRequestId,
   PullRequestQuery,
   PullRequestUpdate,
   PullRequest,
   CreatePullRequest,
   CreatePullRequestFromIssue,
-  MergeRequest,
-  MergedResult,
   PullRequestFile,
   PullRequestReference,
-  MergedStatus,
 };
 
 use types::commits::GithubCommit;

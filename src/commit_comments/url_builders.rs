@@ -1,12 +1,13 @@
 use types::{
   Url,
-  PullRequestId,
 };
 
 
 use types::comments::CommentId;
 
 use types::repos::Repository;
+
+use types::pull_requests::PullRequestId;
 
 use pull_requests::url_builders::{
   pull_request_at,

@@ -13,10 +13,11 @@ use types::{
   GitTm,
   SortDirection,
   Issue,
-  PullRequest
 };
 
 use types::repos::Repo;
+
+use types::pull_requests::PullRequest;
 
 pub type CommentId = u32;
 
