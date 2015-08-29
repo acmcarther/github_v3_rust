@@ -8,10 +8,11 @@ pub use self::url_builders::{
 
 mod url_builders {
   use types::{
-    Repository,
     Url,
     PullRequestId,
   };
+
+  use types::repos::Repository;
 
   pub fn pull_requests(repo: &Repository) -> Url {
     "https://api.github.com/repos/".to_owned() +

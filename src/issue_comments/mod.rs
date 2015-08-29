@@ -8,17 +8,17 @@ use std::io::ErrorKind;
 
 use types::{
   GitErr,
-  Repository,
   IssueId,
   CommentId,
   ListIssueCommentsQuery,
   ListRepoCommentsQuery,
-  CommentSortables,
   CreateIssueComment,
   EditComment,
   DeleteCommentStatus,
   IssueComment,
 };
+
+use types::repos::Repository;
 
 pub trait IssueCommenter {
   fn list_in_issue(&self, repo: Repository, issue_id: IssueId, query: Option<ListIssueCommentsQuery>) -> Result<Vec<IssueComment>, GitErr>;

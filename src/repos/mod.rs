@@ -10,12 +10,7 @@ use types::{
   BranchName,
   UserName,
   OrganizationName,
-  Repository,
   GitErr,
-  Repo,
-  RepoQuery,
-  CreateRepository,
-  EditRepository,
   ContributorsQuery,
   LanguagePile,
   Team,
@@ -23,8 +18,16 @@ use types::{
   Branch,
   FullBranch,
   DeletedStatus,
-  PublicReposQuery,
   GithubUser
+};
+
+use types::repos::{
+  Repo,
+  RepoQuery,
+  Repository,
+  PublicReposQuery,
+  CreateRepository,
+  EditRepository,
 };
 
 pub trait Repoer {

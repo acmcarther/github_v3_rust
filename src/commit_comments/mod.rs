@@ -8,7 +8,6 @@ use std::io::ErrorKind;
 
 use types::{
   GitErr,
-  Repository,
   PullRequestReference,
   PullRequestComment,
   PullRequestCommentQuery,
@@ -18,6 +17,8 @@ use types::{
   EditComment,
   DeleteCommentStatus,
 };
+
+use types::repos::Repository;
 
 pub trait CommitCommenter {
   fn list_comments(&self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr>;

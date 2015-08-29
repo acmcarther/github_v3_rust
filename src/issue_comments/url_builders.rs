@@ -7,11 +7,12 @@ pub use self::url_builders::{
 
 mod url_builders {
   use types::{
-    Repository,
     Url,
     IssueId,
     CommentId
   };
+
+  use types::repos::Repository;
 
   #[allow(dead_code)]
   pub fn issue_comments(repo: &Repository, issue_id: &IssueId) -> Url {

@@ -16,10 +16,11 @@ mod url_builders {
   use types::{
     UserName,
     OrganizationName,
-    Repository,
     BranchName,
     Url
   };
+
+  use types::repos::Repository;
 
   #[allow(dead_code)]
   pub fn own_repos() -> Url {

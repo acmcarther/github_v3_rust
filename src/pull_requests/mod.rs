@@ -8,7 +8,6 @@ use std::io::ErrorKind;
 
 use types::{
   GitErr,
-  Repository,
   PullRequestId,
   PullRequestQuery,
   PullRequestUpdate,
@@ -22,6 +21,8 @@ use types::{
   MergedStatus,
   GithubCommit,
 };
+
+use types::repos::Repository;
 
 pub trait PullRequester {
   fn list(&self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, GitErr>;
