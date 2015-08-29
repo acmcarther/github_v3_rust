@@ -194,6 +194,7 @@ pub enum RepoVisibility {
   Private,
   All
 }
+
 custom_enum_decode_encode!(
   RepoVisibility [
     "public" <=> [RepoVisibility::Public],

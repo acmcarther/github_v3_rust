@@ -1,15 +1,10 @@
 pub mod url_builders;
 
 use hyper::method::Method;
-
 use github_client::{SimpleClient};
-
 use std::io::ErrorKind;
 
-use types::{
-  GitErr,
-};
-
+use types::GitErr;
 use types::pull_requests::PullRequestReference;
 
 use types::comments::{

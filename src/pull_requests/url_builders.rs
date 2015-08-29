@@ -1,9 +1,5 @@
-use types::{
-  Url,
-};
-
+use types::Url;
 use types::pull_requests::PullRequestId;
-
 use types::repos::Repository;
 
 pub fn pull_requests(repo: &Repository) -> Url {

@@ -1,12 +1,6 @@
-use types::{
-  Url,
-};
-
-
+use types::Url;
 use types::comments::CommentId;
-
 use types::repos::Repository;
-
 use types::pull_requests::PullRequestId;
 
 use pull_requests::url_builders::{
@@ -32,10 +26,7 @@ mod tests {
   use expectest::core::expect;
   use expectest::matchers::be_equal_to;
 
-  pub use types::{
-    Url,
-  };
-
+  pub use types::Url;
   pub use types::repos::Repository;
 
   pub use super::{

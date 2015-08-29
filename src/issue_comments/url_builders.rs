@@ -31,10 +31,7 @@ mod tests {
   use expectest::core::expect;
   use expectest::matchers::be_equal_to;
 
-  pub use types::{
-    Url,
-  };
-
+  pub use types::Url;
   pub use types::repos::Repository;
 
   pub use super::{

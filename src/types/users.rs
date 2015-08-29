@@ -1,6 +1,4 @@
-use types::{
-  Url,
-};
+use types::Url;
 
 pub type UserName = String;
 

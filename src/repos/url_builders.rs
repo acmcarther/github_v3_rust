@@ -70,13 +70,9 @@ mod tests {
   use expectest::core::expect;
   use expectest::matchers::be_equal_to;
 
-  pub use types::{
-    Url,
-  };
+  use types::repos::Repository;
 
-  pub use types::repos::Repository;
-
-  pub use super::{
+  use super::{
     own_repos,
     user_repos,
     organization_repos,

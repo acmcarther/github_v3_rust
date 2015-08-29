@@ -134,8 +134,6 @@ custom_enum_decode_encode!(
   ]
 );
 
-
-
 #[derive(RustcDecodable, Debug)]
 pub struct PushEvent {
   // TODO: custom decode for key ref
@@ -152,7 +150,6 @@ pub struct PushEvent {
   pub pusher: GitUser,
   pub sender: GithubUser,
 }
-
 
 #[derive(RustcDecodable, Debug)]
 pub struct Issue {
@@ -260,5 +257,3 @@ pub enum DeletedStatus {
   Deleted,
   NotDeleted
 }
-
-
