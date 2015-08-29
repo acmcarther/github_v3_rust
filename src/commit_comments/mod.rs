@@ -9,6 +9,9 @@ use std::io::ErrorKind;
 use types::{
   GitErr,
   PullRequestReference,
+};
+
+use types::comments::{
   PullRequestComment,
   PullRequestCommentQuery,
   CommentId,

@@ -1,8 +1,10 @@
 use types::{
   Url,
   PullRequestId,
-  CommentId
 };
+
+
+use types::comments::CommentId;
 
 use types::repos::Repository;
 
