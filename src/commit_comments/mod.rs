@@ -1,4 +1,3 @@
-pub mod types;
 pub mod url_builders;
 
 use hyper::method::Method;
@@ -10,17 +9,11 @@ use std::io::ErrorKind;
 use types::{
   GitErr,
   Repository,
-};
-
-use pull_requests::types::{
   PullRequestReference,
-};
-
-use commit_comments::types::{
   PullRequestComment,
   PullRequestCommentQuery,
   CommentId,
-  CreateComment,
+  CreateCommitComment,
   ReplyComment,
   EditComment,
   DeleteCommentStatus,
@@ -30,7 +23,7 @@ pub trait CommitCommenter {
   fn list_comments(&self, pull_request: PullRequestReference) -> Result<Vec<PullRequestComment>, GitErr>;
   fn list_all_pull_request_comments(&self, repo: Repository, query: PullRequestCommentQuery) -> Result<Vec<PullRequestComment>, GitErr>;
   fn get_single_comment(&self, repo: Repository, comment_id: CommentId) -> Result<PullRequestComment, GitErr>;
-  fn create_comment(&self, pull_request: PullRequestReference, comment_details: CreateComment) -> Result<PullRequestComment, GitErr>;
+  fn create_comment(&self, pull_request: PullRequestReference, comment_details: CreateCommitComment) -> Result<PullRequestComment, GitErr>;
   fn create_comment_reply(&self, pull_request: PullRequestReference, comment_details: ReplyComment) -> Result<PullRequestComment, GitErr>;
   fn edit_comment(&self, repo: Repository, comment_id: CommentId, body: EditComment) -> Result<PullRequestComment, GitErr>;
   #[allow(dead_code, unused_variables)]
@@ -53,7 +46,7 @@ impl<C: SimpleClient> CommitCommenter for C {
     self.request_without_payload(Method::Get, url)
   }
 
-  fn create_comment(&self, pull_request: PullRequestReference, comment_details: CreateComment) -> Result<PullRequestComment, GitErr> {
+  fn create_comment(&self, pull_request: PullRequestReference, comment_details: CreateCommitComment) -> Result<PullRequestComment, GitErr> {
     let url = url_builders::pull_request_comments(&pull_request.repo, &pull_request.pull_request_id);
     self.request_with_payload(Method::Patch, url, comment_details)
   }

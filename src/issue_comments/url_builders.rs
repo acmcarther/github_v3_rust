@@ -10,9 +10,6 @@ mod url_builders {
     Repository,
     Url,
     IssueId,
-  };
-
-  use issue_comments::types::{
     CommentId
   };
 

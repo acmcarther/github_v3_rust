@@ -1,4 +1,3 @@
-pub mod types;
 pub mod url_builders;
 
 use hyper::method::Method;
@@ -10,9 +9,6 @@ use std::io::ErrorKind;
 use types::{
   GitErr,
   Repository,
-};
-
-use pull_requests::types::{
   PullRequestId,
   PullRequestQuery,
   PullRequestUpdate,
@@ -24,9 +20,8 @@ use pull_requests::types::{
   PullRequestFile,
   PullRequestReference,
   MergedStatus,
+  GithubCommit,
 };
-
-use commits::types::GithubCommit;
 
 pub trait PullRequester {
   fn list(&self, repo: Repository, query: Option<PullRequestQuery>) -> Result<Vec<PullRequest>, GitErr>;

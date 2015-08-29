@@ -10,9 +10,6 @@ mod url_builders {
   use types::{
     Repository,
     Url,
-  };
-
-  use pull_requests::types::{
     PullRequestId,
   };
 

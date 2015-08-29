@@ -1,4 +1,3 @@
-pub mod types;
 pub mod url_builders;
 
 use hyper::method::Method;
@@ -13,9 +12,6 @@ use types::{
   OrganizationName,
   Repository,
   GitErr,
-};
-
-use repos::types::{
   Repo,
   RepoQuery,
   CreateRepository,
@@ -28,9 +24,8 @@ use repos::types::{
   FullBranch,
   DeletedStatus,
   PublicReposQuery,
+  GithubUser
 };
-
-use users::types::GithubUser;
 
 pub trait Repoer {
   fn list_own_repos(&self, query: RepoQuery) -> Result<Vec<Repo>, GitErr>;

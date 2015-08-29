@@ -1,4 +1,3 @@
-pub mod types;
 pub mod url_builders;
 
 use hyper::method::Method;
@@ -11,14 +10,11 @@ use types::{
   GitErr,
   Repository,
   IssueId,
-};
-
-pub use issue_comments::types::{
   CommentId,
   ListIssueCommentsQuery,
   ListRepoCommentsQuery,
   CommentSortables,
-  CreateComment,
+  CreateIssueComment,
   EditComment,
   DeleteCommentStatus,
   IssueComment,
@@ -28,7 +24,7 @@ pub trait IssueCommenter {
   fn list_in_issue(&self, repo: Repository, issue_id: IssueId, query: Option<ListIssueCommentsQuery>) -> Result<Vec<IssueComment>, GitErr>;
   fn list_in_repo(&self, repo: Repository, query: Option<ListRepoCommentsQuery>) -> Result<Vec<IssueComment>, GitErr>;
   fn get_comment(&self, repo: Repository, comment_id: CommentId) -> Result<IssueComment, GitErr>;
-  fn create_comment(&self, repo: Repository, issue_id: IssueId, details: CreateComment) -> Result<IssueComment, GitErr>;
+  fn create_comment(&self, repo: Repository, issue_id: IssueId, details: CreateIssueComment) -> Result<IssueComment, GitErr>;
   fn edit_comment(&self, repo: Repository, comment_id: CommentId, details: EditComment) -> Result<IssueComment, GitErr>;
   fn delete_comment(&self, repo: Repository, comment_id: CommentId) -> Result<DeleteCommentStatus, GitErr>;
 }
@@ -55,7 +51,7 @@ impl<C: SimpleClient> IssueCommenter for C {
     self.request_without_payload(Method::Get, url)
   }
 
-  fn create_comment(&self, repo: Repository, issue_id: IssueId, details: CreateComment) -> Result<IssueComment, GitErr> {
+  fn create_comment(&self, repo: Repository, issue_id: IssueId, details: CreateIssueComment) -> Result<IssueComment, GitErr> {
     let url = url_builders::issue_comments(&repo, &issue_id);
     self.request_with_payload(Method::Post, url, details)
   }
