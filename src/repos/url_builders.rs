@@ -1,9 +1,9 @@
 use types::{
-  UserName,
   OrganizationName,
   BranchName,
   Url
 };
+use types::users::UserName;
 use types::repos::Repository;
 
 #[allow(dead_code)]

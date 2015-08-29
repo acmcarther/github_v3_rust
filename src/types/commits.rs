@@ -1,11 +1,14 @@
 use types::{
   BranchName,
   Sha,
-  GithubUser,
   Message,
   GitTm,
   Filename,
   Url,
+};
+
+use types::users::{
+  GithubUser,
   GitUser
 };
 

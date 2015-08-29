@@ -7,7 +7,6 @@ use rustc_serialize::{
 
 use types::{
   Url,
-  GithubUser,
   HeadQuery,
   Filename,
   BranchName,
@@ -18,6 +17,7 @@ use types::{
   Sha
 };
 
+use types::users::GithubUser;
 use types::repos::{
   Repo,
   Repository,

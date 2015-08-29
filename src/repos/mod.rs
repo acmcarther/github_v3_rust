@@ -8,7 +8,6 @@ use std::io::ErrorKind;
 
 use types::{
   BranchName,
-  UserName,
   OrganizationName,
   GitErr,
   ContributorsQuery,
@@ -18,7 +17,6 @@ use types::{
   Branch,
   FullBranch,
   DeletedStatus,
-  GithubUser
 };
 
 use types::repos::{
@@ -28,6 +26,10 @@ use types::repos::{
   PublicReposQuery,
   CreateRepository,
   EditRepository,
+};
+use types::users::{
+  UserName,
+  GithubUser
 };
 
 pub trait Repoer {

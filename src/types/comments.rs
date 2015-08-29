@@ -8,13 +8,13 @@ use rustc_serialize::{
 use types::{
   Url,
   Sha,
-  GithubUser,
   Message,
   GitTm,
   SortDirection,
   Issue,
 };
 
+use types::users::GithubUser;
 use types::repos::Repo;
 
 use types::pull_requests::PullRequest;

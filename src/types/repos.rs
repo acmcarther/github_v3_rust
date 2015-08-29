@@ -7,13 +7,16 @@ use rustc_serialize::{
 
 use types::{
   Url,
-  UserName,
   BranchName,
   SortDirection,
-  GitUser,
   GitTm,
   Message,
   Organization,
+};
+
+use types::users::{
+  GitUser,
+  UserName,
   GithubUser
 };
 
