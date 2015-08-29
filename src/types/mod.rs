@@ -49,6 +49,7 @@ macro_rules! custom_enum_decode_encode {
 }
 
 pub mod comments;
+pub mod commits;
 pub mod pull_requests;
 pub mod repos;
 pub mod users;
@@ -70,6 +71,13 @@ use types::repos::{
   Repo,
   Repository,
   LegacyRepo,
+};
+
+use types::commits::{
+  PushCommit,
+  CommitTreeNode,
+  Commit,
+  GithubCommit
 };
 
 use std::collections::HashMap;
@@ -128,50 +136,6 @@ custom_enum_decode_encode!(
 
 
 
-#[derive(RustcDecodable, Debug)]
-pub struct Commit {
-  pub label: BranchName,
-  // ref TODO: custom decoder for reserved word
-  pub sha: Sha,
-  pub user: GithubUser,
-  pub repo: Repo,
-}
-
-#[derive(RustcDecodable, Debug)]
-pub struct GithubCommit {
-  pub url: Url,
-  pub sha: Sha,
-  pub html_url: Url,
-  pub comments_url: Url,
-  pub commit: GithubCommitSummary,
-  pub author: GithubUser,
-  pub committer: GithubUser,
-  pub parents: Vec<CommitTreeNode>
-}
-
-#[derive(RustcDecodable, Debug)]
-pub struct GithubCommitSummary {
-  pub url: Url,
-  pub author: CommitAuthor,
-  pub committer: CommitAuthor,
-  pub message: Message,
-  pub tree: CommitTreeNode,
-  pub comment_count: u32,
-}
-
-#[derive(RustcDecodable, Debug)]
-pub struct CommitAuthor {
-  pub name: String,
-  pub email: String,
-  pub date: GitTm
-}
-
-#[derive(RustcDecodable, Debug)]
-pub struct CommitTreeNode {
-  pub url: Url,
-  pub sha: Sha,
-}
-
 #[derive(Debug)]
 pub enum PullRequestEventType {
   Assigned,
@@ -220,20 +184,6 @@ pub struct PushEvent {
   pub repository: LegacyRepo,
   pub pusher: GitUser,
   pub sender: GithubUser,
-}
-
-#[derive(RustcDecodable, Debug)]
-pub struct PushCommit {
-  pub id: Sha,
-  pub distinct: bool,
-  pub message: Message,
-  pub timestamp: GitTm,
-  pub url: Url,
-  pub author: GitUser,
-  pub committer: GitUser,
-  pub added: Vec<Filename>,
-  pub removed: Vec<Filename>,
-  pub modified: Vec<Filename>,
 }
 
 

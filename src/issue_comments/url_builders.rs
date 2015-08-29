@@ -32,9 +32,10 @@ mod tests {
   use expectest::matchers::be_equal_to;
 
   pub use types::{
-    Repository,
     Url,
   };
+
+  pub use types::repos::Repository;
 
   pub use super::{
     issue_comments,

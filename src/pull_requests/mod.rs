@@ -19,8 +19,9 @@ use types::{
   PullRequestFile,
   PullRequestReference,
   MergedStatus,
-  GithubCommit,
 };
+
+use types::commits::GithubCommit;
 
 use types::repos::Repository;
 
