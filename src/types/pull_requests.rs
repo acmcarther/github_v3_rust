@@ -27,7 +27,7 @@ use types::commits::{
   Commit
 };
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum PullRequestEventType {
   Assigned,
   Unassigned,
@@ -63,7 +63,7 @@ pub struct PullRequestEvent {
 pub type PullRequestId = u32;
 pub type PullRequestTitle = String;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum PullRequestState {
   Open,
   Closed
@@ -76,7 +76,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum PullRequestStateQuery {
   Open,
   Closed,
@@ -91,7 +91,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum PullRequestSortables {
   CreatedAt,
   UpdatedAt,
@@ -108,7 +108,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(RustcEncodable, RustcDecodable, Debug)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
 pub struct PullRequestQuery {
   pub state: Option<PullRequestStateQuery>,
   pub head: Option<HeadQuery>,
@@ -117,7 +117,7 @@ pub struct PullRequestQuery {
   pub direction: Option<SortDirection>,
 }
 
-#[derive(RustcEncodable, RustcDecodable, Debug)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
 pub struct PullRequestUpdate {
   pub title: Option<PullRequestTitle>,
   pub body: Option<Message>,
@@ -149,7 +149,7 @@ pub struct PullRequest {
   // TODO: _links
 }
 
-#[derive(RustcEncodable, RustcDecodable, Debug)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
 pub struct CreatePullRequest {
   pub title: PullRequestTitle,
   pub head: HeadQuery,
@@ -157,14 +157,14 @@ pub struct CreatePullRequest {
   pub body: Option<Message>
 }
 
-#[derive(RustcEncodable, RustcDecodable, Debug)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
 pub struct CreatePullRequestFromIssue {
   pub head: HeadQuery,
   pub base: BranchName,
   pub issue: IssueId
 }
 
-#[derive(RustcEncodable, RustcDecodable, Debug)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
 pub struct PullRequestFile {
   pub sha: Sha,
   pub filename: Filename,
