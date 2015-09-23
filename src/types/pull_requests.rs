@@ -178,6 +178,7 @@ pub struct PullRequestFile {
   pub patch: String  // TODO: Define this type
 }
 
+#[derive(Debug)]
 pub struct PullRequestReference {
   pub repo: Repository,
   pub pull_request_id: PullRequestId

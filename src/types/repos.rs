@@ -22,6 +22,7 @@ use types::users::{
 
 pub type RepoName = String;
 
+#[derive(Debug)]
 pub struct Repository {
   pub owner: UserName,
   pub repo_name: RepoName

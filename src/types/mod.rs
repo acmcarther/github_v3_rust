@@ -165,6 +165,7 @@ pub struct Issue {
 }
 
 #[allow(dead_code)]
+#[derive(Debug)]
 pub struct MergeRequest {
   pub commit_message: Option<Message>,
   pub sha: Option<Sha>
