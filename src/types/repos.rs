@@ -22,7 +22,7 @@ use types::users::{
 
 pub type RepoName = String;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Repository {
   pub owner: UserName,
   pub repo_name: RepoName
@@ -181,7 +181,7 @@ pub struct LegacyRepo {
   pub source: Option<Box<Repo>>,
 }
 
-#[derive(RustcEncodable, Debug, PartialEq)]
+#[derive(RustcEncodable, Debug, PartialEq, Clone)]
 pub struct RepoQuery {
   pub visibility: Option<RepoVisibility>,
   pub affliation: Option<RepoAffiliations>,
@@ -189,7 +189,7 @@ pub struct RepoQuery {
   pub direction: Option<SortDirection>
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum RepoVisibility {
   Public,
   Private,
@@ -207,7 +207,7 @@ custom_enum_decode_encode!(
 // TODO: Make this a proper product type
 pub type RepoAffiliations = String;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum RepoSortables {
   Updated,
   Pushed,
@@ -222,7 +222,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(RustcEncodable, Debug, PartialEq)]
+#[derive(RustcEncodable, Debug, PartialEq, Clone)]
 pub struct CreateRepository {
   pub name: RepoName,
   pub description: Option<Message>,
@@ -237,7 +237,7 @@ pub struct CreateRepository {
   pub license_template: Option<String>
 }
 
-#[derive(RustcEncodable, Debug, PartialEq)]
+#[derive(RustcEncodable, Debug, PartialEq, Clone)]
 pub struct EditRepository {
   pub name: RepoName,
   pub description: Option<Message>,
@@ -249,7 +249,7 @@ pub struct EditRepository {
   pub default_branch: Option<BranchName>
 }
 
-#[derive(RustcEncodable, Debug, PartialEq)]
+#[derive(RustcEncodable, Debug, PartialEq, Clone)]
 pub struct PublicReposQuery {
   pub since: String
 }

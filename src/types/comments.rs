@@ -39,14 +39,14 @@ pub struct PullRequestComment {
   // TODO: _links
 }
 
-#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq)]
+#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq, Clone)]
 pub struct PullRequestCommentQuery {
   pub sort: Option<PullRequestCommentSortable>,
   pub direction: Option<SortDirection>,
   pub since: Option<GitTm>
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum PullRequestCommentSortable {
   Created,
   Updated
@@ -59,7 +59,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq)]
+#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq, Clone)]
 pub struct CreateCommitComment {
   pub body: Message,
   pub commit_id: Sha,
@@ -67,17 +67,17 @@ pub struct CreateCommitComment {
   pub position: u32, // TODO: type for this
 }
 
-#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq)]
+#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq, Clone)]
 pub struct ReplyComment {
   pub body: Message,
   pub in_reply_to: CommentId
 }
 
-#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq)]
+#[derive(RustcDecodable, RustcEncodable, Debug, PartialEq, Clone)]
 pub struct EditComment {
   pub body: Message
 }
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum IssueCommentEventType {
   Created
 }
@@ -97,7 +97,7 @@ pub struct IssueCommentEvent {
   pub sender: GithubUser
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum PullRequestReviewCommentEventType {
   Created
 }
@@ -117,12 +117,12 @@ pub struct PullRequestReviewCommentEvent {
   pub sender: GithubUser
 }
 
-#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq, Clone)]
 pub struct ListIssueCommentsQuery {
   pub since: GitTm
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum CommentSortables {
   CreatedAt,
   UpdatedAt,
@@ -135,14 +135,14 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq, Clone)]
 pub struct ListRepoCommentsQuery {
   pub sort: CommentSortables,
   pub direction: SortDirection,
   pub since: GitTm
 }
 
-#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq)]
+#[derive(RustcEncodable, RustcDecodable, Debug, PartialEq, Clone)]
 pub struct CreateIssueComment {
   pub body: Message
 }
