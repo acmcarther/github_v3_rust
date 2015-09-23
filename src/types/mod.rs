@@ -94,7 +94,7 @@ pub type Filename = String;
 pub type OrganizationName = String;
 pub type GitErr = Error;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct GitTm(Tm);
 
 impl Decodable for GitTm {
@@ -121,7 +121,7 @@ impl Encodable for GitTm {
   }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum SortDirection {
   Ascending,
   Descending,
@@ -209,7 +209,7 @@ pub struct Organization {
   pub site_admin: bool
 }
 
-#[derive(RustcEncodable, Debug, PartialEq)]
+#[derive(RustcEncodable, Debug, PartialEq, Clone)]
 pub struct ContributorsQuery {
   pub anon: bool
 }
