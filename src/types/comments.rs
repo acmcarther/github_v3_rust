@@ -153,7 +153,7 @@ pub enum DeleteCommentStatus {
   NotDeleted
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Clone, Debug)]
 pub struct IssueComment {
   pub id: CommentId,
   pub url: Url,
