@@ -4,8 +4,6 @@ use hyper::method::Method;
 
 use github_client::{SimpleClient};
 
-use std::io::ErrorKind;
-
 use types::{
   BranchName,
   OrganizationName,
@@ -126,6 +124,6 @@ impl<C: SimpleClient> Repoer for C {
 
   #[allow(unused_variables)]
   fn delete_repo(&self, repo: Repository) -> Result<DeletedStatus, GitErr> {
-    Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+    Err(GitErr::NotImplemented("Repoer#delete_repo".to_owned()))
   }
 }

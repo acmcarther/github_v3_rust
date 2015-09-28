@@ -4,8 +4,6 @@ use hyper::method::Method;
 
 use github_client::{SimpleClient};
 
-use std::io::ErrorKind;
-
 use types::{
   GitErr,
   IssueId,
@@ -67,6 +65,6 @@ impl<C: SimpleClient> IssueCommenter for C {
   #[allow(unused_variables)]
   fn delete_comment(&self, repo: Repository, comment_id: CommentId) -> Result<DeleteCommentStatus, GitErr> {
     // TODO:
-    Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+    Err(GitErr::NotImplemented("IssueCommenter#delete_comment".to_owned()))
   }
 }

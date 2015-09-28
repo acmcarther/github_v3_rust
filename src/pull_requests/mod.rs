@@ -4,8 +4,6 @@ use hyper::method::Method;
 
 use github_client::{SimpleClient};
 
-use std::io::ErrorKind;
-
 use types::{
   GitErr,
   MergeRequest,
@@ -84,12 +82,12 @@ impl<C: SimpleClient> PullRequester for C {
   #[allow(dead_code, unused_variables)]
   fn get_merged(&self, pull_request: PullRequestReference) -> Result<MergedStatus, GitErr> {
     // TODO:
-    Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+    Err(GitErr::NotImplemented("PullRequester#get_merged".to_owned()))
   }
 
   #[allow(dead_code, unused_variables)]
   fn merge(&self, pull_request: PullRequestReference, merge_request: Option<MergeRequest>) -> Result<MergedResult, GitErr> {
     // TODO:
-    Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+    Err(GitErr::NotImplemented("PullRequester#merge".to_owned()))
   }
 }

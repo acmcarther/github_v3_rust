@@ -59,7 +59,6 @@ use time::{
   strptime,
   strftime
 };
-use std::io::Error;
 use rustc_serialize::{
   Decodable,
   Decoder,
@@ -82,6 +81,8 @@ use types::users::{
 };
 
 use std::collections::HashMap;
+use std::error::Error;
+use std::fmt;
 
 pub type Body = String;
 pub type HeadQuery = String;
@@ -92,7 +93,36 @@ pub type Sha = String;
 pub type Url = String;
 pub type Filename = String;
 pub type OrganizationName = String;
-pub type GitErr = Error;
+
+#[derive(Debug, PartialEq, Clone)]
+pub enum GitErr {
+  NotImplemented(String),
+  EncodeErr(String),
+  DecodeErr(String),
+  NetworkErr(String)
+}
+
+impl fmt::Display for GitErr {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match *self {
+      GitErr::NotImplemented(ref err) => write!(f, "Not Implemented error: {}", err),
+      GitErr::EncodeErr(ref err) => write!(f, "Encode error: {}", err),
+      GitErr::DecodeErr(ref err) => write!(f, "Decode error: {}", err),
+      GitErr::NetworkErr(ref err) => write!(f, "Network error: {}", err)
+    }
+  }
+}
+
+impl Error for GitErr {
+  fn description(&self) -> &str {
+    match *self {
+      GitErr::NotImplemented(ref err) => err,
+      GitErr::EncodeErr(ref err) => err,
+      GitErr::DecodeErr(ref err) => err,
+      GitErr::NetworkErr(ref err) => err
+    }
+  }
+}
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct GitTm(Tm);
