@@ -51,7 +51,7 @@ custom_enum_decode_encode!(
 );
 
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct PullRequestEvent {
   pub action: PullRequestEventType,
   pub number: u32,
@@ -124,7 +124,7 @@ pub struct PullRequestUpdate {
   pub state: Option<PullRequestState>
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct PullRequest {
   pub id: PullRequestId,
   pub url: Url,
@@ -178,7 +178,7 @@ pub struct PullRequestFile {
   pub patch: String  // TODO: Define this type
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PullRequestReference {
   pub repo: Repository,
   pub pull_request_id: PullRequestId

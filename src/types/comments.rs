@@ -20,7 +20,7 @@ use types::pull_requests::PullRequest;
 
 pub type CommentId = u32;
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct PullRequestComment {
   pub url: Url,
   pub id: u32,
@@ -88,7 +88,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct IssueCommentEvent {
   pub action: IssueCommentEventType,
   pub issue: Issue,
@@ -108,7 +108,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct PullRequestReviewCommentEvent {
   pub action: PullRequestReviewCommentEventType,
   pub comment: PullRequestComment,
@@ -148,12 +148,13 @@ pub struct CreateIssueComment {
 }
 
 #[allow(dead_code)]
+#[derive(Debug, Clone)]
 pub enum DeleteCommentStatus {
   Deleted,
   NotDeleted
 }
 
-#[derive(RustcDecodable, Clone, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct IssueComment {
   pub id: CommentId,
   pub url: Url,

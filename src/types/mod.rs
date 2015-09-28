@@ -164,7 +164,7 @@ custom_enum_decode_encode!(
   ]
 );
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Clone, Debug)]
 pub struct PushEvent {
   // TODO: custom decode for key ref
   pub before: Sha,
@@ -181,7 +181,7 @@ pub struct PushEvent {
   pub sender: GithubUser,
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Clone, Debug)]
 pub struct Issue {
   pub url: Url,
   pub labels_url: Url,
@@ -195,31 +195,34 @@ pub struct Issue {
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct MergeRequest {
   pub commit_message: Option<Message>,
   pub sha: Option<Sha>
 }
 
 #[allow(dead_code)]
+#[derive(Debug, Clone)]
 pub enum MergeFailure {
   NotPossible,
   ShaDidNotMatch,
 }
 
 #[allow(dead_code)]
+#[derive(Debug, Clone)]
 pub enum MergedResult {
   Success { sha: Sha, message: Message },
   Failure { failure_type: MergeFailure, message: Message, documentation_url: Url }
 }
 
 #[allow(dead_code)]
+#[derive(Debug, Clone)]
 pub enum MergedStatus {
   Merged,
   NotMerged
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct Organization {
   pub login: UserName,
   pub id: u32,
@@ -244,11 +247,11 @@ pub struct ContributorsQuery {
   pub anon: bool
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct LanguagePile(HashMap<String, u32>); // TODO: Types
 
 // TODO: Types
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct Team {
   pub id: u32,
   pub url: Url,
@@ -262,7 +265,7 @@ pub struct Team {
 }
 
 // TODO: Types
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct Tag {
   pub name: String,
   pub commit: CommitTreeNode,
@@ -270,13 +273,13 @@ pub struct Tag {
   pub tarball_url: Url
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct Branch {
   pub name: BranchName,
   pub commit: CommitTreeNode,
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct FullBranch {
   pub name: BranchName,
   pub commit: GithubCommit
@@ -284,6 +287,7 @@ pub struct FullBranch {
 }
 
 #[allow(dead_code)]
+#[derive(Debug, Clone)]
 pub enum DeletedStatus {
   Deleted,
   NotDeleted

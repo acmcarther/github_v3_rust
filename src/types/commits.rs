@@ -14,7 +14,7 @@ use types::users::{
 
 use types::repos::Repo;
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct Commit {
   pub label: BranchName,
   // ref TODO: custom decoder for reserved word
@@ -23,7 +23,7 @@ pub struct Commit {
   pub repo: Repo,
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct GithubCommit {
   pub url: Url,
   pub sha: Sha,
@@ -35,7 +35,7 @@ pub struct GithubCommit {
   pub parents: Vec<CommitTreeNode>
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct GithubCommitSummary {
   pub url: Url,
   pub author: CommitAuthor,
@@ -45,20 +45,20 @@ pub struct GithubCommitSummary {
   pub comment_count: u32,
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct CommitAuthor {
   pub name: String,
   pub email: String,
   pub date: GitTm
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct CommitTreeNode {
   pub url: Url,
   pub sha: Sha,
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct PushCommit {
   pub id: Sha,
   pub distinct: bool,
