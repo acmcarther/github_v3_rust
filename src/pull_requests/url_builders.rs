@@ -47,7 +47,7 @@ mod tests {
   #[test]
   fn it_builds_pull_requests() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls";
     expect!(pull_requests(&repo)).to(be_equal_to(expected));
   }
 
@@ -55,7 +55,7 @@ mod tests {
   fn it_builds_pull_request_at() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let pr_id = 21;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21";
     expect!(pull_request_at(&repo, &pr_id)).to(be_equal_to(expected));
   }
 
@@ -63,7 +63,7 @@ mod tests {
   fn it_builds_pull_request_commits() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let pr_id = 21;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/commits".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/commits";
     expect!(pull_request_commits(&repo, &pr_id)).to(be_equal_to(expected));
   }
 
@@ -71,7 +71,7 @@ mod tests {
   fn it_builds_pull_request_files() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let pr_id = 21;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/files".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/files";
     expect!(pull_request_files(&repo, &pr_id)).to(be_equal_to(expected));
   }
 
@@ -79,7 +79,7 @@ mod tests {
   fn it_builds_pull_request_merge() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let pr_id = 21;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/merge".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/merge";
     expect!(pull_request_merge(&repo, &pr_id)).to(be_equal_to(expected));
   }
 }
