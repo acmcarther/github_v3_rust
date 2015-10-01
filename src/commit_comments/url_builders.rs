@@ -39,14 +39,14 @@ mod tests {
   fn it_builds_pull_request_comments() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let pr_id = 21;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/comments".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/21/comments";
     expect!(pull_request_comments(&repo, &pr_id)).to(be_equal_to(expected));
   }
 
   #[test]
   fn it_builds_all_pull_request_comments() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/comments".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/comments";
     expect!(all_pull_request_comments(&repo)).to(be_equal_to(expected));
   }
 
@@ -54,7 +54,7 @@ mod tests {
   fn it_builds_pull_request_comment_at() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let comment_id = 1;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/comments/1".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/pulls/comments/1";
     expect!(pull_request_comment_at(&repo, &comment_id)).to(be_equal_to(expected));
   }
 }
