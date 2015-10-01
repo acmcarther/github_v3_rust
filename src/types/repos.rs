@@ -28,14 +28,14 @@ pub struct Repository {
   pub repo_name: RepoName
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct RepoPermissions {
   pub admin: bool,
   pub push: bool,
   pub pull: bool
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct Repo {
   pub id: u32, // TODO: This id
   pub owner: GithubUser,
@@ -108,7 +108,7 @@ pub struct Repo {
   pub source: Option<Box<Repo>>,
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct LegacyRepo {
   pub id: u32, // TODO: This id
   pub owner: GitUser,

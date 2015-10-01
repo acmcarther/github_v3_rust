@@ -2,7 +2,6 @@ pub mod url_builders;
 
 use hyper::method::Method;
 use github_client::{SimpleClient};
-use std::io::ErrorKind;
 
 use types::GitErr;
 use types::pull_requests::PullRequestReference;
@@ -64,6 +63,6 @@ impl<C: SimpleClient> CommitCommenter for C {
   #[allow(dead_code, unused_variables)]
   fn delete_comment(&self, repo: Repository, comment_id: CommentId) -> Result<DeleteCommentStatus, GitErr> {
     // TODO:
-    Err(GitErr::new(ErrorKind::Other, "not implemented".to_owned()))
+    Err(GitErr::NotImplemented("CommitCommenter#delete_comment".to_owned()))
   }
 }

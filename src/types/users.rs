@@ -2,7 +2,7 @@ use types::Url;
 
 pub type UserName = String;
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct GithubUser {
   pub login: UserName,
   pub id: u32,
@@ -22,7 +22,7 @@ pub struct GithubUser {
   pub site_admin: bool
 }
 
-#[derive(RustcDecodable, Debug)]
+#[derive(RustcDecodable, Debug, Clone)]
 pub struct GitUser {
   pub name: String,
   pub email: String,

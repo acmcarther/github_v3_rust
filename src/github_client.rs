@@ -19,7 +19,7 @@ pub mod github_client {
   };
 
   use types::{GitErr, Url, Body};
-  use std::io::{Read, ErrorKind};
+  use std::io::Read;
   use std::any::Any;
 
   pub struct GithubClient<S: Scheme + Any> where S::Err: 'static {
@@ -28,15 +28,15 @@ pub mod github_client {
   }
 
   fn net_err_to_git_err(err: HyperError) -> GitErr {
-    GitErr::new(ErrorKind::Other, "Request failed: ".to_owned() + &err.to_string())
+    GitErr::NetworkErr(err.to_string())
   }
 
   fn decode_err_to_git_err(err: DecoderError) -> GitErr {
-    GitErr::new(ErrorKind::Other, "Decode failed: ".to_owned() + &err.to_string())
+    GitErr::DecodeErr(err.to_string())
   }
 
   fn encode_err_to_git_err(err: EncoderError) -> GitErr {
-    GitErr::new(ErrorKind::Other, "Encode failed: ".to_owned() + &err.to_string())
+    GitErr::EncodeErr(err.to_string())
   }
 
   fn deserialize<S: Decodable>(response: Response) -> Result<S, GitErr> {
