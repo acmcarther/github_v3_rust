@@ -44,14 +44,14 @@ mod tests {
   fn it_builds_issue_comments() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let issue_id = 21;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/issues/21/comments".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/issues/21/comments";
     expect!(issue_comments(&repo, &issue_id)).to(be_equal_to(expected));
   }
 
   #[test]
   fn it_builds_issue_comments_for_repo() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
-    let expected = "https://api.github.com/repos/test_owner/test_repo/issues/comments".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/issues/comments";
     expect!(issue_comments_for_repo(&repo)).to(be_equal_to(expected));
   }
 
@@ -59,7 +59,7 @@ mod tests {
   fn it_builds_issue_comment_at() {
     let repo = Repository { owner: "test_owner".to_owned(), repo_name: "test_repo".to_owned() };
     let comment_id = 21;
-    let expected = "https://api.github.com/repos/test_owner/test_repo/issues/comments/21".to_owned();
+    let expected = "https://api.github.com/repos/test_owner/test_repo/issues/comments/21";
     expect!(issue_comment_at(&repo, &comment_id)).to(be_equal_to(expected));
   }
 }
