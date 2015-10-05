@@ -1,3 +1,4 @@
+#![doc(html_root_url = "https://acmcarther.github.io/github_v3_rust/")]
 extern crate hyper;
 extern crate time;
 extern crate rustc_serialize;
@@ -5,6 +6,10 @@ extern crate rustc_serialize;
 #[cfg(test)]
 #[macro_use(expect)]
 extern crate expectest;
+
+#[cfg(test)]
+#[macro_use]
+extern crate rusty_mock;
 
 #[macro_use]
 pub mod types;
