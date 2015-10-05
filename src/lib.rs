@@ -6,6 +6,10 @@ extern crate rustc_serialize;
 #[macro_use(expect)]
 extern crate expectest;
 
+#[cfg(test)]
+#[macro_use]
+extern crate rusty_mock;
+
 #[macro_use]
 pub mod types;
 

@@ -10,3 +10,7 @@ time = "*"
 
 [dev-dependencies]
 expectest = "*"
+
+[dev-dependencies.rusty-mock]
+git = "https://github.com/acmcarther/rusty-mock"
+rev = "30e3da6fa169afd1436fa522754a14187808a5a3"

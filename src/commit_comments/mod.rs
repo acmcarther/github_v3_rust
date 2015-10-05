@@ -66,3 +66,8 @@ impl<C: SimpleClient> CommitCommenter for C {
     Err(GitErr::NotImplemented("CommitCommenter#delete_comment".to_owned()))
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use rusty_mock::*;
+}
