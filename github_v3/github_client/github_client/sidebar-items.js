@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["GithubClient",""]],"trait":[["SimpleClient",""]]});

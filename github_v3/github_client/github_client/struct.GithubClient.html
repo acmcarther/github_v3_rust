@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `GithubClient` struct in crate `github_v3`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, GithubClient">
+
+    <title>github_v3::github_client::github_client::GithubClient - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>github_v3</a>::<wbr><a href='../index.html'>github_client</a>::<wbr><a href='index.html'>github_client</a></p><script>window.sidebarCurrent = {name: 'GithubClient', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>github_v3</a>::<wbr><a href='../index.html'>github_client</a>::<wbr><a href='index.html'>github_client</a>::<wbr><a class='struct' href=''>GithubClient</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-3819' class='srclink' href='../../../src/github_v3/github_client.rs.html#25-28' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct GithubClient&lt;S: <a class='trait' href='../../../hyper/header/common/authorization/trait.Scheme.html' title='hyper::header::common::authorization::Scheme'>Scheme</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/any/trait.Any.html' title='core::any::Any'>Any</a>&gt; <span class='where'>where S::Err: 'static</span> {
+    // some fields omitted
+}</pre><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;S: <a class='trait' href='../../../hyper/header/common/authorization/trait.Scheme.html' title='hyper::header::common::authorization::Scheme'>Scheme</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/any/trait.Any.html' title='core::any::Any'>Any</a>&gt; <a class='struct' href='../../../github_v3/github_client/github_client/struct.GithubClient.html' title='github_v3::github_client::github_client::GithubClient'>GithubClient</a>&lt;S&gt; <span class='where'>where S::Err: 'static</span></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(token: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../../github_v3/struct.Authorization.html' title='github_v3::Authorization'>Authorization</a>&lt;S&gt;&gt;) -&gt; <a class='struct' href='../../../github_v3/github_client/github_client/struct.GithubClient.html' title='github_v3::github_client::github_client::GithubClient'>GithubClient</a>&lt;S&gt;</code></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;S: <a class='trait' href='../../../hyper/header/common/authorization/trait.Scheme.html' title='hyper::header::common::authorization::Scheme'>Scheme</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/any/trait.Any.html' title='core::any::Any'>Any</a>&gt; <a class='trait' href='../../../github_v3/github_client/github_client/trait.SimpleClient.html' title='github_v3::github_client::github_client::SimpleClient'>SimpleClient</a> for <a class='struct' href='../../../github_v3/github_client/github_client/struct.GithubClient.html' title='github_v3::github_client::github_client::GithubClient'>GithubClient</a>&lt;S&gt; <span class='where'>where S::Err: 'static</span></code></h3><div class='impl-items'><h4 id='method.request_without_payload' class='method'><code>fn <a href='../../../github_v3/github_client/github_client/trait.SimpleClient.html#method.request_without_payload' class='fnname'>request_without_payload</a>&lt;D: <a class='trait' href='../../../rustc_serialize/serialize/trait.Decodable.html' title='rustc_serialize::serialize::Decodable'>Decodable</a>&gt;(&amp;self, method: <a class='enum' href='../../../github_v3/enum.Method.html' title='github_v3::Method'>Method</a>, url: <a class='type' href='../../../github_v3/types/type.Url.html' title='github_v3::types::Url'>Url</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;D, <a class='enum' href='../../../github_v3/types/enum.GitErr.html' title='github_v3::types::GitErr'>GitErr</a>&gt;</code></h4>
+<h4 id='method.request_with_payload' class='method'><code>fn <a href='../../../github_v3/github_client/github_client/trait.SimpleClient.html#method.request_with_payload' class='fnname'>request_with_payload</a>&lt;D: <a class='trait' href='../../../rustc_serialize/serialize/trait.Decodable.html' title='rustc_serialize::serialize::Decodable'>Decodable</a>, E: <a class='trait' href='../../../rustc_serialize/serialize/trait.Encodable.html' title='rustc_serialize::serialize::Encodable'>Encodable</a>&gt;(&amp;self, method: <a class='enum' href='../../../github_v3/enum.Method.html' title='github_v3::Method'>Method</a>, url: <a class='type' href='../../../github_v3/types/type.Url.html' title='github_v3::types::Url'>Url</a>, body: E) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;D, <a class='enum' href='../../../github_v3/types/enum.GitErr.html' title='github_v3::types::GitErr'>GitErr</a>&gt;</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "github_v3";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    
+    <script async src="../../../search-index.js"></script>
+</body>
+</html>

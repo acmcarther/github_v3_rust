@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Commit",""],["CommitAuthor",""],["CommitTreeNode",""],["GithubCommit",""],["GithubCommitSummary",""],["PushCommit",""]]});

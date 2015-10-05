@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["GitUser",""],["GithubUser",""]],"type":[["UserName",""]]});

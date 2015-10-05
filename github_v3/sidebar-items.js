@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Method","The Request Method (VERB)"]],"macro":[["custom_enum_decode!",""],["custom_enum_decode_encode!",""],["custom_enum_encode!",""]],"mod":[["github_client",""],["types",""]],"struct":[["Authorization","`Authorization` header, defined in RFC7235"]],"trait":[["CommitCommenter",""],["IssueCommenter",""],["PullRequester",""],["Repoer",""]]});

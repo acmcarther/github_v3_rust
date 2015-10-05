@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["RepoSortables",""],["RepoVisibility",""]],"struct":[["CreateRepository",""],["EditRepository",""],["LegacyRepo",""],["PublicReposQuery",""],["Repo",""],["RepoPermissions",""],["RepoQuery",""],["Repository",""]],"type":[["RepoAffiliations",""],["RepoName",""]]});
