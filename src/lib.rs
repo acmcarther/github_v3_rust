@@ -1,3 +1,4 @@
+#![doc(html_root_url = "https://acmcarther.github.io/github_v3_rust/")]
 extern crate hyper;
 extern crate time;
 extern crate rustc_serialize;
